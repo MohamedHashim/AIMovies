@@ -1,4 +1,4 @@
-package com.example.aimovies.ui.theme
+package com.example.aimovies.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
