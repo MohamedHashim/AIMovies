@@ -2,6 +2,7 @@ package com.example.aimovies.application
 
 import android.app.Application
 import com.example.aimovies.di.dataModule
+import com.example.aimovies.di.domainModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -15,7 +16,7 @@ class AiMoviesApp : Application() {
         startKoin {
             androidLogger()
             androidContext(this@AiMoviesApp)
-            modules(dataModule)
+            modules(dataModule, domainModule)
         }
     }
 }
