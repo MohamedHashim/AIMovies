@@ -5,40 +5,33 @@ import com.example.aimovies.data.remote.dto.Movie
 import com.example.aimovies.data.repository.DiscoverMovieRepositoryImpl
 import com.example.aimovies.domain.mapper.toMovieModel
 import com.example.aimovies.domain.model.MovieModel
+import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.junit.MockitoJUnitRunner
 
 /**
  * Created by A.Elkhami on 18/07/2023.
  */
 
-@RunWith(MockitoJUnitRunner::class)
 class GetDiscoverMovieTest {
 
-    @Mock
     private lateinit var repository: DiscoverMovieRepositoryImpl
 
     private lateinit var useCase: GetDiscoverMovie
 
     @Before
     fun setUp() {
+        repository = mockk()
         useCase = GetDiscoverMovie(repository)
     }
 
     @Test
     fun getDiscoverMovie_success_returnMoviesList() =
         runTest {
-            `when`(
-                repository.getDiscoverMovies(1)
-            ).thenReturn(
-                responseStub
-            )
+            coEvery { repository.getDiscoverMovies(1) } returns responseStub
 
             val expected = responseStub.results.map {movie ->
                 movie.toMovieModel()
@@ -52,11 +45,7 @@ class GetDiscoverMovieTest {
     @Test
     fun getDiscoverMovie_error_returnNull() =
         runTest {
-            `when`(
-                repository.getDiscoverMovies(1)
-            ).thenReturn(
-                null
-            )
+            coEvery { repository.getDiscoverMovies(1) } returns null
 
             val expected = listOf<MovieModel>()
 
