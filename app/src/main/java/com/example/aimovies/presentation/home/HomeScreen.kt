@@ -15,6 +15,7 @@ import com.example.aimovies.domain.model.MovieModel
 import com.example.aimovies.presentation.home.composables.MovieItem
 import com.example.aimovies.presentation.ui.LocalSpacing
 import com.example.aimovies.presentation.ui.theme.AIMoviesTheme
+import org.koin.androidx.compose.koinViewModel
 
 /**
  * Created by A.Elkhami on 18/07/2023.
@@ -49,6 +50,15 @@ val movies = listOf(
 
 @Composable
 fun HomeScreen() {
+    val viewModel = koinViewModel<HomeViewModel>()
+    viewModel.getDiscoverMovie(1)
+    HomeScreenUi(viewModel.uiState.discoverMovieList)
+}
+
+@Composable
+fun HomeScreenUi(
+    discoverMovieList: List<MovieModel>
+) {
     val spacing = LocalSpacing.current
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -59,7 +69,7 @@ fun HomeScreen() {
             modifier = Modifier.padding(spacing.spaceMedium, spacing.space25)
         )
         LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(movies) { movie ->
+            items(discoverMovieList) { movie ->
                 MovieItem(modifier = Modifier, movie = movie) {
 
                 }
@@ -72,6 +82,6 @@ fun HomeScreen() {
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
     AIMoviesTheme {
-        HomeScreen()
+        HomeScreenUi(movies)
     }
 }

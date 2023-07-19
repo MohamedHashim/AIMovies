@@ -1,5 +1,6 @@
 package com.example.aimovies.domain.use_case
 
+import com.example.aimovies.BuildConfig
 import com.example.aimovies.data.remote.dto.DiscoverMovieResponse
 import com.example.aimovies.data.remote.dto.Movie
 import com.example.aimovies.data.repository.DiscoverMovieRepositoryImpl
@@ -32,53 +33,49 @@ class GetDiscoverMovieTest {
     }
 
     @Test
-    fun getDiscoverMovie_success_returnMoviesList() {
-        val responseStub = DiscoverMovieResponse(
-            page = 1, results = listOf(
-                Movie(
-                    adult = false,
-                    backdrop_path = "",
-                    poster_path = "",
-                    release_date = "",
-                    overview = "",
-                    id = 1,
-                    genre_ids = listOf(1, 2),
-                    original_language = "",
-                    original_title = "",
-                    title = "",
-                    popularity = 0.0,
-                    video = false,
-                    vote_average = 0.0,
-                    vote_count = 0
-                )
-            ), total_pages = 1, total_results = 2
-        )
-
+    fun getDiscoverMovie_success_returnMoviesList() =
         runTest {
             `when`(
                 repository.getDiscoverMovies(1)
             ).thenReturn(
-                    responseStub
-                )
+                responseStub
+            )
 
-            val expected = responseStub.results.map {
-                it.toMovieModel()
+            val expected = responseStub.results.map {movie ->
+                movie.toMovieModel().copy(posterPath = BuildConfig.POSTER_BASE_URL + movie.poster_path)
             }
 
             val moviesList = useCase(1)
 
             assertEquals(expected, moviesList)
         }
-    }
 
     @Test
-    fun getDiscoverMovie_error_returnNull() {
+    fun getDiscoverMovie_success_assertPosterPath() =
         runTest {
             `when`(
                 repository.getDiscoverMovies(1)
             ).thenReturn(
-                    null
-                )
+                responseStub
+            )
+
+            val expected = responseStub.results.map { movie ->
+                movie.toMovieModel().copy(posterPath = BuildConfig.POSTER_BASE_URL + movie.poster_path)
+            }
+
+            val moviesList = useCase(1)
+
+            assertEquals(expected[0].posterPath, moviesList[0].posterPath)
+        }
+
+    @Test
+    fun getDiscoverMovie_error_returnNull() =
+        runTest {
+            `when`(
+                repository.getDiscoverMovies(1)
+            ).thenReturn(
+                null
+            )
 
             val expected = listOf<MovieModel>()
 
@@ -86,5 +83,25 @@ class GetDiscoverMovieTest {
 
             assertEquals(expected, moviesList)
         }
-    }
+
+    private val responseStub = DiscoverMovieResponse(
+        page = 1, results = listOf(
+            Movie(
+                adult = false,
+                backdrop_path = "",
+                poster_path = "123",
+                release_date = "",
+                overview = "",
+                id = 1,
+                genre_ids = listOf(1, 2),
+                original_language = "",
+                original_title = "",
+                title = "",
+                popularity = 0.0,
+                video = false,
+                vote_average = 0.0,
+                vote_count = 0
+            )
+        ), total_pages = 1, total_results = 2
+    )
 }

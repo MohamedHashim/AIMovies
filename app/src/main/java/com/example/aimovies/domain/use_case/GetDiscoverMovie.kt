@@ -1,5 +1,6 @@
 package com.example.aimovies.domain.use_case
 
+import com.example.aimovies.BuildConfig
 import com.example.aimovies.data.repository.DiscoverMovieRepository
 import com.example.aimovies.domain.mapper.toMovieModel
 import com.example.aimovies.domain.model.MovieModel
@@ -13,7 +14,7 @@ class GetDiscoverMovie(private val repository: DiscoverMovieRepository) {
 
         response?.let {
             return it.results.map { movie ->
-                movie.toMovieModel()
+                movie.toMovieModel().copy(posterPath = BuildConfig.POSTER_BASE_URL + movie.poster_path)
             }
         }.run {
             return emptyList()
