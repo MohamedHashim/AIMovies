@@ -1,13 +1,17 @@
 package com.example.aimovies.presentation.home
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,18 +33,16 @@ val movies = listOf(
         voteAverage = 8.5,
         posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%-min.png",
         releaseDate = "01/03/2023"
-    ),
-    MovieModel(
+    ), MovieModel(
         overview = "test",
-        title = "The Tromorrow War",
+        title = "The Tomorrow War",
         voteCount = 10,
         voteAverage = 8.5,
         posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%20maverick-min.png",
         releaseDate = "01/03/2023"
-    ),
-    MovieModel(
+    ), MovieModel(
         overview = "test",
-        title = "The Tromorrow War",
+        title = "The Tomorrow War",
         voteCount = 10,
         voteAverage = 8.5,
         posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%20maverick-min.png",
@@ -51,13 +53,15 @@ val movies = listOf(
 @Composable
 fun HomeScreen() {
     val viewModel = koinViewModel<HomeViewModel>()
-    viewModel.getDiscoverMovie(1)
-    HomeScreenUi(viewModel.uiState.discoverMovieList)
+    LaunchedEffect(key1 = true) {
+        viewModel.getDiscoverMovie(1)
+    }
+    HomeScreenUi(viewModel.uiState)
 }
 
 @Composable
 fun HomeScreenUi(
-    discoverMovieList: List<MovieModel>
+    uiState: HomeUiModel,
 ) {
     val spacing = LocalSpacing.current
 
@@ -66,12 +70,23 @@ fun HomeScreenUi(
             text = "Discover Movies",
             fontWeight = FontWeight.Bold,
             fontSize = spacing.fontTitle,
-            modifier = Modifier.padding(spacing.spaceMedium, spacing.space25)
+            modifier = Modifier.padding(
+                start = spacing.spaceMedium,
+                end = spacing.spaceMedium,
+                top = spacing.mainTitleVerticalPadding
+            )
         )
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(discoverMovieList) { movie ->
-                MovieItem(modifier = Modifier, movie = movie) {
+        Box(contentAlignment = Alignment.Center) {
+            if (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(top = spacing.discoverMoviesLoaderTopPadding)
+                )
+            }
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                items(uiState.discoverMovieList) { movie ->
+                    MovieItem(modifier = Modifier, movie = movie) {
 
+                    }
                 }
             }
         }
@@ -82,6 +97,6 @@ fun HomeScreenUi(
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
     AIMoviesTheme {
-        HomeScreenUi(movies)
+        HomeScreenUi(HomeUiModel(movies))
     }
 }

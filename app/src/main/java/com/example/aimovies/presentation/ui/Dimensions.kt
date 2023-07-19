@@ -14,7 +14,7 @@ data class Dimensions(
     val spaceExtraSmall: Dp = 4.dp,
     val spaceSmall: Dp = 8.dp,
     val spaceMedium: Dp = 16.dp,
-    val space25: Dp = 25.dp,
+    val mainTitleVerticalPadding: Dp = 20.dp,
     val spaceLarge: Dp = 32.dp,
     val spaceExtraLarge: Dp = 64.dp,
     val spaceDoubleExtraLarge: Dp = 128.dp,
@@ -23,6 +23,7 @@ data class Dimensions(
     val loadingIconSize: Dp = 60.dp,
     val placeholderWidth: Dp = 130.dp,
     val placeholderHeight: Dp = 180.dp,
+    val discoverMoviesLoaderTopPadding: Dp = 100.dp,
     val fontTitle: TextUnit = 26.sp
 )
 

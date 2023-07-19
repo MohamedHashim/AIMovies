@@ -18,7 +18,7 @@ class HomeViewModel(private val getDiscoverMovieUseCase: GetDiscoverMovie) : Vie
     fun getDiscoverMovie(page: Int) {
         viewModelScope.launch {
             val movies = getDiscoverMovieUseCase(page)
-            uiState = uiState.copy(discoverMovieList = movies)
+            uiState = uiState.copy(discoverMovieList = movies, isLoading = false)
         }
     }
 }
