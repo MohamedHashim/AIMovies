@@ -15,14 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import com.example.aimovies.presentation.ui.LocalSpacing
 
 /**
  * Created by A.Elkhami on 18/07/2023.
  */
 @Composable
 fun LoadingAnimation() {
+    val spacing = LocalSpacing.current
+
     val animation = rememberInfiniteTransition()
+
     val progress by animation.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
@@ -34,11 +37,11 @@ fun LoadingAnimation() {
 
     Box(
         modifier = Modifier
-            .size(60.dp)
+            .size(spacing.loadingIconSize)
             .scale(progress)
             .alpha(1f - progress)
             .border(
-                5.dp,
+                spacing.loadingIconBorder,
                 color = Color.Black,
                 shape = CircleShape
             )

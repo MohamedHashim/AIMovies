@@ -18,12 +18,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.aimovies.R
 import com.example.aimovies.domain.model.MovieModel
+import com.example.aimovies.presentation.ui.LocalSpacing
 import com.example.aimovies.presentation.ui.theme.AIMoviesTheme
 
 /**
@@ -35,17 +35,23 @@ fun MovieItem(
     movie: MovieModel,
     onClick: () -> Unit
 ) {
+    val spacing = LocalSpacing.current
     val painter = rememberAsyncImagePainter(movie.posterPath)
     val state = painter.state
 
     Column(modifier = modifier
         .width(IntrinsicSize.Min)
-        .padding(top = 16.dp, bottom = 16.dp, start = 4.dp, end = 4.dp)
-        .clip(RoundedCornerShape(20.dp))
+        .padding(
+            top = spacing.spaceMedium,
+            bottom = spacing.spaceMedium,
+            start = spacing.spaceExtraSmall,
+            end = spacing.spaceExtraSmall
+        )
+        .clip(RoundedCornerShape(spacing.curvedCornerSize))
         .clickable {
             onClick()
         }
-        .padding(8.dp)) {
+        .padding(spacing.spaceSmall)) {
 
         Box(contentAlignment = Alignment.Center) {
             if (state is AsyncImagePainter.State.Loading) {
@@ -53,34 +59,34 @@ fun MovieItem(
             }
             AsyncImage(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .size(130.dp, 180.dp),
+                    .clip(RoundedCornerShape(spacing.curvedCornerSize))
+                    .size(spacing.placeholderWidth, spacing.placeholderHeight),
                 contentScale = ContentScale.Crop,
                 model = movie.posterPath,
                 onLoading = {
 
                 },
                 error = painterResource(id = R.drawable.movie_placeholder),
-                contentDescription = ""
+                contentDescription = null
             )
         }
         Text(
             text = movie.title,
-            modifier = Modifier.padding(top = 4.dp),
+            modifier = Modifier.padding(top = spacing.spaceExtraSmall),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
         Text(
             text = movie.title,
             color = Color.Gray,
-            modifier = Modifier.padding(top = 4.dp),
+            modifier = Modifier.padding(top = spacing.spaceExtraSmall),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
         Text(
             text = movie.voteAverage.toString(),
             color = Color.Gray,
-            modifier = Modifier.padding(top = 4.dp)
+            modifier = Modifier.padding(top = spacing.spaceExtraSmall)
         )
     }
 }

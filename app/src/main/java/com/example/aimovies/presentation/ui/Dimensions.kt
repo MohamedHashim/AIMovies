@@ -2,7 +2,9 @@ package com.example.aimovies.presentation.ui
 
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /**
  * Created by A.Elkhami on 18/07/2023.
@@ -12,18 +14,16 @@ data class Dimensions(
     val spaceExtraSmall: Dp = 4.dp,
     val spaceSmall: Dp = 8.dp,
     val spaceMedium: Dp = 16.dp,
+    val space25: Dp = 25.dp,
     val spaceLarge: Dp = 32.dp,
     val spaceExtraLarge: Dp = 64.dp,
     val spaceDoubleExtraLarge: Dp = 128.dp,
-    val userImageSize: Dp = 70.dp,
-    val imageBorderWidth: Dp = 1.dp,
-    val imageBorderWidthMedium: Dp = 2.dp,
-    val foodImageSize: Dp = 100.dp,
-    val foodImageSizeLarge: Dp = 150.dp,
-    val foodItemCornerSize: Dp = 28.dp,
-    val curvedCornerSize: Dp = 50.dp,
-    val dividerThickness: Dp = 1.dp,
-    val foodImageYOffset: Dp = 90.dp
+    val curvedCornerSize: Dp = 20.dp,
+    val loadingIconBorder: Dp = 5.dp,
+    val loadingIconSize: Dp = 60.dp,
+    val placeholderWidth: Dp = 130.dp,
+    val placeholderHeight: Dp = 180.dp,
+    val fontTitle: TextUnit = 26.sp
 )
 
 val LocalSpacing = compositionLocalOf { Dimensions() }
