@@ -5,7 +5,7 @@ import com.example.aimovies.data.remote.dto.Movie
 import com.example.aimovies.data.repository.DiscoverMovieRepositoryImpl
 import com.example.aimovies.domain.mapper.toMovieModel
 import com.example.aimovies.domain.model.MovieModel
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -33,39 +33,35 @@ class GetDiscoverMovieTest {
 
     @Test
     fun getDiscoverMovie_success_returnMoviesList() {
+        val responseStub = DiscoverMovieResponse(
+            page = 1, results = listOf(
+                Movie(
+                    adult = false,
+                    backdrop_path = "",
+                    poster_path = "",
+                    release_date = "",
+                    overview = "",
+                    id = 1,
+                    genre_ids = listOf(1, 2),
+                    original_language = "",
+                    original_title = "",
+                    title = "",
+                    popularity = 0.0,
+                    video = false,
+                    vote_average = 0.0,
+                    vote_count = 0
+                )
+            ), total_pages = 1, total_results = 2
+        )
 
-        runBlocking {
+        runTest {
             `when`(
                 repository.getDiscoverMovies(1)
-            )
-                .thenReturn(
-                    DiscoverMovieResponse(
-                        page = 1,
-                        results = listOf(
-                            Movie(
-                                adult = false,
-                                backdrop_path = "",
-                                poster_path = "",
-                                release_date = "",
-                                overview = "",
-                                id = 1,
-                                genre_ids = listOf(1, 2),
-                                original_language = "",
-                                original_title = "",
-                                title = "",
-                                popularity = 0.0,
-                                video = false,
-                                vote_average = 0.0,
-                                vote_count = 0
-                            )
-                        ),
-                        total_pages = 1,
-                        total_results = 2
-                    )
+            ).thenReturn(
+                    responseStub
                 )
 
-            val result = repository.getDiscoverMovies(1)
-            val expected = result!!.results.map {
+            val expected = responseStub.results.map {
                 it.toMovieModel()
             }
 
@@ -77,11 +73,10 @@ class GetDiscoverMovieTest {
 
     @Test
     fun getDiscoverMovie_error_returnNull() {
-        runBlocking {
+        runTest {
             `when`(
                 repository.getDiscoverMovies(1)
-            )
-                .thenReturn(
+            ).thenReturn(
                     null
                 )
 
