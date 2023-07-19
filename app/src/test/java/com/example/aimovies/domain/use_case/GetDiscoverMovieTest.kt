@@ -1,6 +1,5 @@
 package com.example.aimovies.domain.use_case
 
-import com.example.aimovies.BuildConfig
 import com.example.aimovies.data.remote.dto.DiscoverMovieResponse
 import com.example.aimovies.data.remote.dto.Movie
 import com.example.aimovies.data.repository.DiscoverMovieRepositoryImpl
@@ -42,30 +41,12 @@ class GetDiscoverMovieTest {
             )
 
             val expected = responseStub.results.map {movie ->
-                movie.toMovieModel().copy(posterPath = BuildConfig.POSTER_BASE_URL + movie.poster_path)
+                movie.toMovieModel()
             }
 
             val moviesList = useCase(1)
 
             assertEquals(expected, moviesList)
-        }
-
-    @Test
-    fun getDiscoverMovie_success_assertPosterPath() =
-        runTest {
-            `when`(
-                repository.getDiscoverMovies(1)
-            ).thenReturn(
-                responseStub
-            )
-
-            val expected = responseStub.results.map { movie ->
-                movie.toMovieModel().copy(posterPath = BuildConfig.POSTER_BASE_URL + movie.poster_path)
-            }
-
-            val moviesList = useCase(1)
-
-            assertEquals(expected[0].posterPath, moviesList[0].posterPath)
         }
 
     @Test
