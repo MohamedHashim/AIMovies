@@ -23,6 +23,8 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "String", "AUTH_KEY","\"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZWVkZTk2ZDUxNTQ4NTA1ZTY3YTY4NjFhY2U3NjBmYyIsInN1YiI6IjY0YjY1MmUxMzc4MDYyMDBmZjNhNWM0NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.g3GD-e6kvUmXyPXG8EJ8lAYPBEDZQy4LQzrmn8rngBA\""
+
             buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org\""
             buildConfigField "String", "POSTER_BASE_URL", "\"https://image.tmdb.org/t/p/original\""
         }
