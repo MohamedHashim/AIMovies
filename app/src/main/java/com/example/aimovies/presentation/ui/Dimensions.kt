@@ -19,11 +19,13 @@ data class Dimensions(
     val spaceExtraLarge: Dp = 64.dp,
     val spaceDoubleExtraLarge: Dp = 128.dp,
     val curvedCornerSize: Dp = 20.dp,
+    val ratingIconSize: Dp = 21.dp,
     val loadingIconBorder: Dp = 5.dp,
     val loadingIconSize: Dp = 60.dp,
     val placeholderWidth: Dp = 130.dp,
+    val toggleButtonWidth: Dp = 160.dp,
     val placeholderHeight: Dp = 180.dp,
-    val discoverMoviesLoaderTopPadding: Dp = 100.dp,
+    val discoverMoviesLoaderTopPadding: Dp = 80.dp,
     val fontTitle: TextUnit = 26.sp
 )
 

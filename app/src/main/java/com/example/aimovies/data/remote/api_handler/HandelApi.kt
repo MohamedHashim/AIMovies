@@ -14,10 +14,7 @@ suspend inline fun <reified T : Any> handleApi(
 ): Result<T> {
     return try {
         val response = execute()
-
-        val body = response.body<T>()
-
-        Result.Success(body)
+        Result.Success(response.body())
     } catch (e: RedirectResponseException) {
         // 3xx - responses
         Result.Error(e.response.status.description)

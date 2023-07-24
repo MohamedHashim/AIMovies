@@ -1,13 +1,16 @@
 package com.example.aimovies.presentation.home.composables
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
@@ -35,7 +38,7 @@ import com.example.aimovies.presentation.ui.theme.MovieYellow
  * Created by A.Elkhami on 18/07/2023.
  */
 @Composable
-fun MovieItem(
+fun MovieHorizontalItem(
     modifier: Modifier,
     movie: MovieModel,
     onClick: () -> Unit
@@ -44,8 +47,12 @@ fun MovieItem(
     val painter = rememberAsyncImagePainter(movie.posterPath)
     val state = painter.state
 
-    Column(modifier = modifier
-        .width(IntrinsicSize.Min)
+    Row(modifier = modifier
+        .fillMaxWidth()
+        .height(IntrinsicSize.Max)
+        .padding(
+            spacing.spaceExtraSmall
+        )
         .clip(RoundedCornerShape(spacing.curvedCornerSize))
         .clickable {
             onClick()
@@ -69,46 +76,49 @@ fun MovieItem(
                 contentDescription = null
             )
         }
-        Text(
-            text = movie.title,
-            modifier = Modifier.padding(top = spacing.spaceExtraSmall),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            text = movie.title,
-            color = Color.Gray,
-            modifier = Modifier.padding(top = spacing.spaceExtraSmall),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Row(
-            modifier = Modifier.padding(top = spacing.spaceExtraSmall),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = spacing.spaceMedium),
+            verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                Icons.Default.Star,
-                modifier = Modifier.size(spacing.ratingIconSize),
-                tint = MovieYellow,
-                contentDescription = null
+            Text(
+                text = movie.title,
+                modifier = Modifier.padding(top = spacing.spaceExtraSmall),
+                maxLines = 3,
             )
             Text(
-                text = movie.voteAverage.toString(),
+                text = movie.title,
                 color = Color.Gray,
+                modifier = Modifier.padding(top = spacing.spaceExtraSmall),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
+            Row(modifier = Modifier.padding(top = spacing.spaceExtraLarge)) {
+                Icon(
+                    Icons.Default.Star,
+                    modifier = Modifier.size(spacing.ratingIconSize),
+                    tint = MovieYellow,
+                    contentDescription = null
+                )
+                Text(
+                    text = movie.voteAverage.toString(),
+                    color = Color.Gray,
+                )
+            }
         }
     }
 }
 
 @Composable
 @Preview(showBackground = true)
-fun MovieItemPreview() {
+fun MovieHorizontalItemPreview() {
     AIMoviesTheme {
-        MovieItem(
+        MovieHorizontalItem(
             modifier = Modifier,
             movie = MovieModel(
                 overview = "test",
-                title = "The Tromorrow Warrrrrrr",
+                title = "The Demon Barber of Fleet Street",
                 voteCount = 10,
                 voteAverage = 8.5,
                 posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%20maverick-min.png",

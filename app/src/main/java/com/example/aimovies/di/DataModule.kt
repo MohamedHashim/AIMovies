@@ -23,33 +23,34 @@ import org.koin.dsl.module
  * Created by A.Elkhami on 18/07/2023.
  */
 val dataModule = module {
-    single<MovieService> {
-        getMovieService()
+    single {
+        provideHttpClient()
+    }
+    single {
+         MovieService(get())
     }
     single<DiscoverMovieRepository> {
         DiscoverMovieRepositoryImpl(get())
     }
 }
 
-fun getMovieService(): MovieService {
-    return MovieService(
-        client = HttpClient(Android) {
-            install(DefaultRequest) {
-                header(HttpHeaders.ContentType, ContentType.Application.Json)
-            }
-            install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        Log.v(KtorLogger, message)
-                    }
-                }
-                level = LogLevel.BODY
-            }
-            install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                })
-            }
+fun provideHttpClient(): HttpClient {
+    return HttpClient(Android) {
+        install(DefaultRequest) {
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
-    )
+        install(Logging) {
+            logger = object : Logger {
+                override fun log(message: String) {
+                    Log.v(KtorLogger, message)
+                }
+            }
+            level = LogLevel.BODY
+        }
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+            })
+        }
+    }
 }
