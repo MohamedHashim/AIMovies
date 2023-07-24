@@ -1,8 +1,10 @@
 package com.example.aimovies.presentation.home
 
 import com.example.aimovies.MainDispatcherRule
-import com.example.aimovies.domain.model.MovieModel
+import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.domain.use_case.GetDiscoverMovie
+import com.example.aimovies.stub.discoverMovieModelStub
+import com.example.aimovies.stub.discoverMovieResponseStub
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,17 +34,8 @@ class HomeViewModelTest {
 
     @Test
     fun getDiscoverMovie_success_returnMoviesList() {
-        val expected = listOf(
-            MovieModel(
-                overview = "",
-                posterPath = "",
-                releaseDate = "",
-                voteAverage = 0.0,
-                voteCount = 1,
-                title = ""
-            )
-        )
-        coEvery { useCase(1) } returns expected
+        val expected = discoverMovieModelStub
+        coEvery { useCase(1) } returns Result.Success(discoverMovieResponseStub)
 
         runTest {
             viewModel.getDiscoverMovie(1)
@@ -53,14 +46,14 @@ class HomeViewModelTest {
 
     @Test
     fun getDiscoverMovie_error_returnEmptyList() {
-        val expected = emptyList<MovieModel>()
+        val expected = "Error"
 
-        coEvery { useCase(1) } returns emptyList()
+        coEvery { useCase(1) } returns Result.Error(expected)
 
         runTest {
             viewModel.getDiscoverMovie(1)
         }
 
-        Assert.assertEquals(expected, viewModel.uiState.discoverMovieList)
+        Assert.assertEquals(expected, viewModel.uiState.errorMessage)
     }
 }

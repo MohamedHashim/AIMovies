@@ -1,15 +1,22 @@
 package com.example.aimovies.di
 
+import android.util.Log
+import com.example.aimovies.data.Constants.KtorLogger
 import com.example.aimovies.data.remote.MovieService
-import com.example.aimovies.data.remote.MovieServiceImpl
 import com.example.aimovies.data.repository.DiscoverMovieRepository
 import com.example.aimovies.data.repository.DiscoverMovieRepositoryImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logging
+import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
 /**
@@ -17,18 +24,32 @@ import org.koin.dsl.module
  */
 val dataModule = module {
     single<MovieService> {
-        MovieServiceImpl(
-            client = HttpClient(Android) {
-                install(Logging) {
-                    level = LogLevel.BODY
-                }
-                install(JsonFeature) {
-                    serializer = KotlinxSerializer()
-                }
-            }
-        )
+        getMovieService()
     }
     single<DiscoverMovieRepository> {
         DiscoverMovieRepositoryImpl(get())
     }
+}
+
+fun getMovieService(): MovieService {
+    return MovieService(
+        client = HttpClient(Android) {
+            install(DefaultRequest) {
+                header(HttpHeaders.ContentType, ContentType.Application.Json)
+            }
+            install(Logging) {
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        Log.v(KtorLogger, message)
+                    }
+                }
+                level = LogLevel.BODY
+            }
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                })
+            }
+        }
+    )
 }

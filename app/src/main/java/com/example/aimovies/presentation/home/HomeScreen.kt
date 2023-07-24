@@ -76,6 +76,18 @@ fun HomeScreenUi(
                 top = spacing.mainTitleVerticalPadding
             )
         )
+        if (uiState.errorMessage != ""){
+            Text(
+                text = uiState.errorMessage,
+                fontWeight = FontWeight.Bold,
+                fontSize = spacing.fontTitle,
+                modifier = Modifier.padding(
+                    start = spacing.spaceMedium,
+                    end = spacing.spaceMedium,
+                    top = spacing.mainTitleVerticalPadding
+                )
+            )
+        }
         Box(contentAlignment = Alignment.Center) {
             if (uiState.isLoading) {
                 CircularProgressIndicator(
