@@ -20,10 +20,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aimovies.domain.model.MovieModel
+import com.example.aimovies.presentation.home.composables.ErrorView
 import com.example.aimovies.presentation.home.composables.MovieHorizontalItem
 import com.example.aimovies.presentation.home.composables.MovieItem
 import com.example.aimovies.presentation.home.composables.ToggleButton
@@ -66,12 +66,15 @@ fun HomeScreen() {
     LaunchedEffect(key1 = true) {
         viewModel.getDiscoverMovie(1)
     }
-    HomeScreenUi(viewModel.uiState)
+    HomeScreenUi(viewModel.uiState) {
+        viewModel.getDiscoverMovie(1)
+    }
 }
 
 @Composable
 fun HomeScreenUi(
     uiState: HomeUiModel,
+    onRefresh: () -> Unit
 ) {
     val spacing = LocalSpacing.current
 
@@ -91,19 +94,9 @@ fun HomeScreenUi(
             )
         )
         if (uiState.errorMessage != "") {
-            Text(
-                text = uiState.errorMessage,
-                fontWeight = FontWeight.Bold,
-                fontSize = spacing.fontTitle,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(
-                        start = spacing.spaceMedium,
-                        end = spacing.spaceMedium,
-                        top = spacing.spaceLarge
-                    )
-                    .fillMaxWidth()
-            )
+            ErrorView(uiState.errorMessage) {
+                onRefresh()
+            }
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(contentAlignment = Alignment.Center) {
@@ -178,6 +171,8 @@ fun HomeScreenUi(
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
     AIMoviesTheme {
-        HomeScreenUi(HomeUiModel(movies))
+        HomeScreenUi(HomeUiModel(movies)) {
+
+        }
     }
 }

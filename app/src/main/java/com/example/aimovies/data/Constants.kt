@@ -5,4 +5,5 @@ package com.example.aimovies.data
  */
 object Constants {
     const val KtorLogger = "Logger Ktor =>"
+    const val GoogleDNS = "8.8.8.8"
 }

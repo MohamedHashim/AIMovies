@@ -33,7 +33,11 @@ class HomeViewModel(private val getDiscoverMovieUseCase: GetDiscoverMovie) : Vie
                     }
                     data = data.copy(results = results)
                     val movieList = data.results.map { it.toMovieModel() }
-                    uiState = uiState.copy(discoverMovieList = movieList, isLoading = false)
+                    uiState = uiState.copy(
+                        discoverMovieList = movieList,
+                        isLoading = false,
+                        errorMessage = ""
+                    )
                 }
             }
         }

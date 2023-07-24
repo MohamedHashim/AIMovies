@@ -1,5 +1,6 @@
 package com.example.aimovies.data.remote.api_handler
 
+import com.example.aimovies.data.remote.isOnline
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.RedirectResponseException
@@ -13,8 +14,12 @@ suspend inline fun <reified T : Any> handleApi(
     execute: () -> HttpResponse
 ): Result<T> {
     return try {
-        val response = execute()
-        Result.Success(response.body())
+        if (isOnline()) {
+            val response = execute()
+            Result.Success(response.body())
+        } else {
+            Result.Error("No internet connection")
+        }
     } catch (e: RedirectResponseException) {
         // 3xx - responses
         Result.Error(e.response.status.description)
