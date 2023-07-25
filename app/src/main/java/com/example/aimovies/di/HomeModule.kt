@@ -1,6 +1,9 @@
 package com.example.aimovies.di
 
+import com.example.aimovies.domain.use_case.DeleteFavouriteMovie
 import com.example.aimovies.domain.use_case.GetDiscoverMovie
+import com.example.aimovies.domain.use_case.GetFavouriteMovies
+import com.example.aimovies.domain.use_case.InsertFavouriteMovie
 import com.example.aimovies.presentation.home.HomeViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -12,7 +15,16 @@ val homeModule = module {
     single {
         GetDiscoverMovie(get())
     }
+    single {
+        GetFavouriteMovies(get())
+    }
+    single {
+        InsertFavouriteMovie(get())
+    }
+    single {
+        DeleteFavouriteMovie(get())
+    }
     viewModel {
-        HomeViewModel(get())
+        HomeViewModel(get(), get(), get())
     }
 }

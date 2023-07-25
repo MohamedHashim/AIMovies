@@ -34,37 +34,13 @@ import org.koin.androidx.compose.koinViewModel
 /**
  * Created by A.Elkhami on 18/07/2023.
  */
-
-val movies = listOf(
-    MovieModel(
-        overview = "test",
-        title = "The Tomorrow War",
-        voteCount = 10,
-        voteAverage = 8.5,
-        posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%-min.png",
-        releaseDate = "01/03/2023"
-    ), MovieModel(
-        overview = "test",
-        title = "The Tomorrow War",
-        voteCount = 10,
-        voteAverage = 8.5,
-        posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%20maverick-min.png",
-        releaseDate = "01/03/2023"
-    ), MovieModel(
-        overview = "test",
-        title = "The Tomorrow War",
-        voteCount = 10,
-        voteAverage = 8.5,
-        posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%20maverick-min.png",
-        releaseDate = "01/03/2023"
-    )
-)
-
 @Composable
 fun HomeScreen() {
     val viewModel = koinViewModel<HomeViewModel>()
     LaunchedEffect(key1 = true) {
         viewModel.getDiscoverMovie(1)
+//        viewModel.insertFavouriteMovie()
+        viewModel.getFavouriteMovies()
     }
     HomeScreenUi(viewModel.uiState) {
         viewModel.getDiscoverMovie(1)
@@ -136,7 +112,7 @@ fun HomeScreenUi(
                         .fillMaxSize()
                         .padding(top = spacing.spaceExtraSmall)
                 ) {
-                    itemsIndexed(uiState.discoverMovieList) { index, movie ->
+                    itemsIndexed(uiState.favouriteMovieList) { index, movie ->
                         MovieHorizontalItem(
                             modifier = Modifier.padding(
                                 top = if (index == 0) spacing.spaceMedium else spacing.spaceExtraSmall,
@@ -162,7 +138,6 @@ fun HomeScreenUi(
                     }
                 }
             }
-
         }
     }
 }
@@ -171,7 +146,7 @@ fun HomeScreenUi(
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
     AIMoviesTheme {
-        HomeScreenUi(HomeUiModel(movies)) {
+        HomeScreenUi(HomeUiModel(emptyList())) {
 
         }
     }

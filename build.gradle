@@ -3,6 +3,8 @@ buildscript {
     dependencies {
         def kotlin_version = '1.7.20'
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+        def sql_delight_version = "1.5.5"
+        classpath "com.squareup.sqldelight:gradle-plugin:$sql_delight_version"
     }
 }
 plugins {

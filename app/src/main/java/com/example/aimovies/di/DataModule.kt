@@ -1,10 +1,17 @@
 package com.example.aimovies.di
 
 import android.util.Log
+import com.example.aimovies.MovieDatabase
 import com.example.aimovies.data.Constants.KtorLogger
+import com.example.aimovies.data.local.FavouriteMovieDataSource
+import com.example.aimovies.data.local.FavouriteMovieDataSourceImpl
 import com.example.aimovies.data.remote.MovieService
 import com.example.aimovies.data.repository.DiscoverMovieRepository
 import com.example.aimovies.data.repository.DiscoverMovieRepositoryImpl
+import com.example.aimovies.data.repository.FavouriteMovieRepository
+import com.example.aimovies.data.repository.FavouriteMovieRepositoryImpl
+import com.squareup.sqldelight.android.AndroidSqliteDriver
+import com.squareup.sqldelight.db.SqlDriver
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
@@ -16,6 +23,7 @@ import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
@@ -27,7 +35,20 @@ val dataModule = module {
         provideHttpClient()
     }
     single {
-         MovieService(get())
+        MovieService(get())
+    }
+    single<SqlDriver> {
+        AndroidSqliteDriver(
+            schema = MovieDatabase.Schema,
+            context = get(),
+            name = "movie.db"
+        )
+    }
+    single<FavouriteMovieDataSource> {
+        FavouriteMovieDataSourceImpl(MovieDatabase(get()), Dispatchers.IO)
+    }
+    single<FavouriteMovieRepository> {
+        FavouriteMovieRepositoryImpl(get())
     }
     single<DiscoverMovieRepository> {
         DiscoverMovieRepositoryImpl(get())

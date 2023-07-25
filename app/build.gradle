@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlinx-serialization'
+    id 'kotlin-kapt'
+    id 'com.squareup.sqldelight'
 }
 
 android {
@@ -23,7 +25,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "AUTH_KEY","\"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZWVkZTk2ZDUxNTQ4NTA1ZTY3YTY4NjFhY2U3NjBmYyIsInN1YiI6IjY0YjY1MmUxMzc4MDYyMDBmZjNhNWM0NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.g3GD-e6kvUmXyPXG8EJ8lAYPBEDZQy4LQzrmn8rngBA\""
+            buildConfigField "String", "AUTH_KEY", "\"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZWVkZTk2ZDUxNTQ4NTA1ZTY3YTY4NjFhY2U3NjBmYyIsInN1YiI6IjY0YjY1MmUxMzc4MDYyMDBmZjNhNWM0NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.g3GD-e6kvUmXyPXG8EJ8lAYPBEDZQy4LQzrmn8rngBA\""
 
             buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org\""
             buildConfigField "String", "POSTER_BASE_URL", "\"https://image.tmdb.org/t/p/original\""
@@ -87,6 +89,11 @@ dependencies {
     //Coil
     implementation "io.coil-kt:coil-compose:2.4.0"
 
+    // SQL Delight
+    def sql_delight_version = "1.5.5"
+    implementation "com.squareup.sqldelight:android-driver:$sql_delight_version"
+    implementation "com.squareup.sqldelight:coroutines-extensions-jvm:$sql_delight_version"
+
     //Mockk
     testImplementation "io.mockk:mockk:1.13.5"
 
@@ -99,4 +106,10 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+}
+
+sqldelight {
+    MovieDatabase {
+        packageName = "com.example.aimovies"
+    }
 }

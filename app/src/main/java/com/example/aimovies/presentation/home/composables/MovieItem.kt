@@ -109,7 +109,6 @@ fun MovieItemPreview() {
             movie = MovieModel(
                 overview = "test",
                 title = "The Tromorrow Warrrrrrr",
-                voteCount = 10,
                 voteAverage = 8.5,
                 posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%20maverick-min.png",
                 releaseDate = "01/03/2023"

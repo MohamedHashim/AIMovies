@@ -8,13 +8,21 @@ import androidx.lifecycle.viewModelScope
 import com.example.aimovies.BuildConfig
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.domain.mapper.toMovieModel
+import com.example.aimovies.domain.use_case.DeleteFavouriteMovie
 import com.example.aimovies.domain.use_case.GetDiscoverMovie
+import com.example.aimovies.domain.use_case.GetFavouriteMovies
+import com.example.aimovies.presentation.home.mapper.toMovieModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
  * Created by A.Elkhami on 18/07/2023.
  */
-class HomeViewModel(private val getDiscoverMovieUseCase: GetDiscoverMovie) : ViewModel() {
+class HomeViewModel(
+    private val getDiscoverMovieUseCase: GetDiscoverMovie,
+    private val getFavouriteMoviesUseCase: GetFavouriteMovies,
+    private val deleteFavouriteMovieUseCase: DeleteFavouriteMovie
+) : ViewModel() {
     var uiState by mutableStateOf(HomeUiModel())
         private set
 
@@ -39,6 +47,19 @@ class HomeViewModel(private val getDiscoverMovieUseCase: GetDiscoverMovie) : Vie
                         errorMessage = ""
                     )
                 }
+            }
+        }
+    }
+
+    fun getFavouriteMovies() {
+        viewModelScope.launch {
+            getFavouriteMoviesUseCase().collectLatest {
+                uiState =
+                    uiState.copy(
+                        favouriteMovieList = it.map { favouriteEntitiy ->
+                            favouriteEntitiy.toMovieModel()
+                        }
+                    )
             }
         }
     }

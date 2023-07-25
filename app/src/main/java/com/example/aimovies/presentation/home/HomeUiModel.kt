@@ -7,6 +7,7 @@ import com.example.aimovies.domain.model.MovieModel
  */
 data class HomeUiModel(
     val discoverMovieList: List<MovieModel> = emptyList(),
+    val favouriteMovieList: List<MovieModel> = emptyList(),
     val isLoading: Boolean = true,
     val errorMessage: String = ""
 )
