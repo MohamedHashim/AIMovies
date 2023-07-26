@@ -35,7 +35,6 @@ val discoverMovieModelStub = listOf(
         posterPath = "https://image.tmdb.org/t/p/original123",
         releaseDate = "",
         voteAverage = 0.0,
-        voteCount = 0,
         title = ""
     )
 )

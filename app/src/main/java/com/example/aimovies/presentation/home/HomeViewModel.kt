@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val getDiscoverMovieUseCase: GetDiscoverMovie,
     private val getFavouriteMoviesUseCase: GetFavouriteMovies
-    ) : ViewModel() {
+) : ViewModel() {
     var uiState by mutableStateOf(HomeUiModel())
         private set
 
@@ -52,12 +52,11 @@ class HomeViewModel(
     fun getFavouriteMovies() {
         viewModelScope.launch {
             getFavouriteMoviesUseCase().collectLatest {
-                uiState =
-                    uiState.copy(
-                        favouriteMovieList = it.map { favouriteEntitiy ->
-                            favouriteEntitiy.toMovieModel()
-                        }
-                    )
+                uiState = uiState.copy(
+                    favouriteMovieList = it.map { favouriteEntity ->
+                        favouriteEntity.toMovieModel()
+                    }
+                )
             }
         }
     }
