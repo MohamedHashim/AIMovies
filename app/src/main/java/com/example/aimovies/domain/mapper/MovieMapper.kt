@@ -1,6 +1,6 @@
 package com.example.aimovies.domain.mapper
 
-import com.example.aimovies.data.local.MovieLocalDto
+import com.example.aimovies.data.local.dto.MovieLocal
 import com.example.aimovies.data.remote.dto.Movie
 import com.example.aimovies.domain.model.MovieModel
 
@@ -15,7 +15,7 @@ fun Movie.toMovieModel() = MovieModel(
     voteAverage = vote_average
 )
 
-fun MovieModel.toMovieLocalDto() = MovieLocalDto(
+fun MovieModel.toMovieLocalDto() = MovieLocal(
     id = id,
     title = title,
     overview = overview,

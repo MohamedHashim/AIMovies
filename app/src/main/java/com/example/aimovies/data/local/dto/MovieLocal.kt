@@ -1,9 +1,9 @@
-package com.example.aimovies.data.local
+package com.example.aimovies.data.local.dto
 
 /**
  * Created by A.Elkhami on 25/07/2023.
  */
-data class MovieLocalDto(
+data class MovieLocal(
     val id: Long? = null,
     val title: String,
     val overview: String,

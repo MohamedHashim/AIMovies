@@ -41,7 +41,7 @@ import com.example.aimovies.presentation.ui.theme.MovieYellow
 fun MovieHorizontalItem(
     modifier: Modifier,
     movie: MovieModel,
-    onClick: () -> Unit
+    onClick: (MovieModel) -> Unit
 ) {
     val spacing = LocalSpacing.current
     val painter = rememberAsyncImagePainter(movie.posterPath)
@@ -55,7 +55,7 @@ fun MovieHorizontalItem(
         )
         .clip(RoundedCornerShape(spacing.curvedCornerSize))
         .clickable {
-            onClick()
+            onClick(movie)
         }
         .padding(spacing.spaceSmall)) {
 
@@ -88,7 +88,7 @@ fun MovieHorizontalItem(
                 maxLines = 3,
             )
             Text(
-                text = movie.title,
+                text = movie.releaseDate,
                 color = Color.Gray,
                 modifier = Modifier.padding(top = spacing.spaceExtraSmall),
                 maxLines = 1,

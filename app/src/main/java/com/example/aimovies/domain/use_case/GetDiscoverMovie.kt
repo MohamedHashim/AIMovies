@@ -2,7 +2,7 @@ package com.example.aimovies.domain.use_case
 
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.data.remote.dto.DiscoverMovieResponse
-import com.example.aimovies.data.repository.DiscoverMovieRepository
+import com.example.aimovies.data.repository.discover.DiscoverMovieRepository
 
 /**
  * Created by A.Elkhami on 18/07/2023.

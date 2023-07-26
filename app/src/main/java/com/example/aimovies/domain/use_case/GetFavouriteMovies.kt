@@ -1,6 +1,6 @@
 package com.example.aimovies.domain.use_case
 
-import com.example.aimovies.data.repository.FavouriteMovieRepository
+import com.example.aimovies.data.repository.favourite.FavouriteMovieRepository
 import example.moviedb.FavouriteEntitiy
 import kotlinx.coroutines.flow.Flow
 

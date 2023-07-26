@@ -30,27 +30,40 @@ import com.example.aimovies.presentation.home.composables.ToggleButton
 import com.example.aimovies.presentation.ui.LocalSpacing
 import com.example.aimovies.presentation.ui.theme.AIMoviesTheme
 import org.koin.androidx.compose.koinViewModel
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 /**
  * Created by A.Elkhami on 18/07/2023.
  */
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onNavigateToOverview: (String, String, String, String, String) -> Unit
+) {
     val viewModel = koinViewModel<HomeViewModel>()
     LaunchedEffect(key1 = true) {
         viewModel.getDiscoverMovie(1)
-//        viewModel.insertFavouriteMovie()
         viewModel.getFavouriteMovies()
     }
-    HomeScreenUi(viewModel.uiState) {
-        viewModel.getDiscoverMovie(1)
-    }
+    HomeScreenUi(
+        viewModel.uiState,
+        onNavigateToOverview = {
+            onNavigateToOverview(
+                it.title,
+                it.overview,
+                it.releaseDate,
+                URLEncoder.encode(it.posterPath, StandardCharsets.UTF_8.toString()),
+                it.voteAverage.toString()
+            )
+        },
+        onRefresh = { viewModel.getDiscoverMovie(1) })
 }
 
 @Composable
 fun HomeScreenUi(
     uiState: HomeUiModel,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onNavigateToOverview: (MovieModel) -> Unit
 ) {
     val spacing = LocalSpacing.current
 
@@ -92,7 +105,7 @@ fun HomeScreenUi(
                                 top = spacing.spaceMedium
                             ), movie = movie
                         ) {
-
+                            onNavigateToOverview(it)
                         }
                     }
                 }
@@ -121,7 +134,7 @@ fun HomeScreenUi(
                                 end = spacing.spaceMedium
                             ), movie = movie
                         ) {
-
+                            onNavigateToOverview(it)
                         }
                     }
                 }
@@ -146,8 +159,6 @@ fun HomeScreenUi(
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
     AIMoviesTheme {
-        HomeScreenUi(HomeUiModel(emptyList())) {
-
-        }
+        HomeScreenUi(HomeUiModel(emptyList()), {}, {})
     }
 }

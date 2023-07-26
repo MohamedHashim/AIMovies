@@ -1,6 +1,6 @@
 package com.example.aimovies.domain.use_case
 
-import com.example.aimovies.data.repository.FavouriteMovieRepository
+import com.example.aimovies.data.repository.favourite.FavouriteMovieRepository
 
 /**
  * Created by A.Elkhami on 25/07/2023.

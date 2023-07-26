@@ -1,4 +1,4 @@
-package com.example.aimovies.data.repository
+package com.example.aimovies.data.repository.discover
 
 import com.example.aimovies.data.remote.MovieService
 import com.example.aimovies.data.remote.api_handler.Result

@@ -3,6 +3,7 @@ package com.example.aimovies.data.repository
 import com.example.aimovies.data.remote.MovieService
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.data.remote.dto.DiscoverMovieResponse
+import com.example.aimovies.data.repository.discover.DiscoverMovieRepositoryImpl
 import com.example.aimovies.stub.discoverMovieResponseStub
 import io.mockk.coEvery
 import io.mockk.mockk

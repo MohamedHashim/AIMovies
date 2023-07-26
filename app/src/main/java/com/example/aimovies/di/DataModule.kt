@@ -6,10 +6,10 @@ import com.example.aimovies.data.Constants.KtorLogger
 import com.example.aimovies.data.local.FavouriteMovieDataSource
 import com.example.aimovies.data.local.FavouriteMovieDataSourceImpl
 import com.example.aimovies.data.remote.MovieService
-import com.example.aimovies.data.repository.DiscoverMovieRepository
-import com.example.aimovies.data.repository.DiscoverMovieRepositoryImpl
-import com.example.aimovies.data.repository.FavouriteMovieRepository
-import com.example.aimovies.data.repository.FavouriteMovieRepositoryImpl
+import com.example.aimovies.data.repository.discover.DiscoverMovieRepository
+import com.example.aimovies.data.repository.discover.DiscoverMovieRepositoryImpl
+import com.example.aimovies.data.repository.favourite.FavouriteMovieRepository
+import com.example.aimovies.data.repository.favourite.FavouriteMovieRepositoryImpl
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import io.ktor.client.HttpClient

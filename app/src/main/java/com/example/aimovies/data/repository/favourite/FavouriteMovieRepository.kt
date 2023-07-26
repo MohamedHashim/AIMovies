@@ -1,6 +1,6 @@
-package com.example.aimovies.data.repository
+package com.example.aimovies.data.repository.favourite
 
-import com.example.aimovies.data.local.MovieLocalDto
+import com.example.aimovies.data.local.dto.MovieLocal
 import example.moviedb.FavouriteEntitiy
 import kotlinx.coroutines.flow.Flow
 
@@ -11,7 +11,7 @@ interface FavouriteMovieRepository {
     fun getFavouriteMovies(): Flow<List<FavouriteEntitiy>>
 
     suspend fun insertFavouriteMovie(
-        movie: MovieLocalDto
+        movie: MovieLocal
     )
 
     suspend fun deleteFavouriteMovie(id: Long)

@@ -2,7 +2,7 @@ package com.example.aimovies.domain.use_case
 
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.data.remote.dto.DiscoverMovieResponse
-import com.example.aimovies.data.repository.DiscoverMovieRepositoryImpl
+import com.example.aimovies.data.repository.discover.DiscoverMovieRepositoryImpl
 import com.example.aimovies.stub.discoverMovieResponseStub
 import io.mockk.coEvery
 import io.mockk.mockk
