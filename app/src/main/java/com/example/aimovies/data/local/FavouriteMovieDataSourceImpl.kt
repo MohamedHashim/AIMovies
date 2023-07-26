@@ -22,6 +22,10 @@ class FavouriteMovieDataSourceImpl(
         return queries.getFavouriteMovies().asFlow().mapToList()
     }
 
+    override suspend fun getFavouriteMovie(title: String): FavouriteEntitiy? {
+        return queries.getFavouriteMovie(title).executeAsOneOrNull()
+    }
+
     override suspend fun insertFavouriteMovie(
         id: Long?,
         title: String,

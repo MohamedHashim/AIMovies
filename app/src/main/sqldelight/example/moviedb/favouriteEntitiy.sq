@@ -11,6 +11,11 @@ getFavouriteMovies:
 SELECT *
 FROM favouriteEntitiy;
 
+getFavouriteMovie:
+SELECT *
+FROM favouriteEntitiy
+WHERE title = :title;
+
 insertFavouriteMovie:
 INSERT OR REPLACE
 INTO favouriteEntitiy

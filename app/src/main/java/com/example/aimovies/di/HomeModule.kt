@@ -2,6 +2,7 @@ package com.example.aimovies.di
 
 import com.example.aimovies.domain.use_case.DeleteFavouriteMovie
 import com.example.aimovies.domain.use_case.GetDiscoverMovie
+import com.example.aimovies.domain.use_case.GetFavouriteMovie
 import com.example.aimovies.domain.use_case.GetFavouriteMovies
 import com.example.aimovies.domain.use_case.InsertFavouriteMovie
 import com.example.aimovies.presentation.home.HomeViewModel
@@ -20,6 +21,9 @@ val homeModule = module {
         GetFavouriteMovies(get())
     }
     single {
+        GetFavouriteMovie(get())
+    }
+    single {
         InsertFavouriteMovie(get())
     }
     single {
@@ -29,6 +33,6 @@ val homeModule = module {
         HomeViewModel(get(), get(), get())
     }
     viewModel {
-        OverviewViewModel(get())
+        OverviewViewModel(get(), get(), get())
     }
 }

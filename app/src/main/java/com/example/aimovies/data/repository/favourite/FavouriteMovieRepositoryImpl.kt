@@ -14,6 +14,10 @@ class FavouriteMovieRepositoryImpl(private val dataSource: FavouriteMovieDataSou
         return dataSource.getFavouriteMovies()
     }
 
+    override suspend fun getFavouriteMovie(title: String): FavouriteEntitiy? {
+        return dataSource.getFavouriteMovie(title)
+    }
+
     override suspend fun insertFavouriteMovie(movie: MovieLocal) {
         dataSource.insertFavouriteMovie(
             movie.id,

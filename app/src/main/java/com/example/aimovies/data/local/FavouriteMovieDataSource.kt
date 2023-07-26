@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 interface FavouriteMovieDataSource {
     fun getFavouriteMovies(): Flow<List<FavouriteEntitiy>>
 
+    suspend fun getFavouriteMovie(title: String): FavouriteEntitiy?
+
     suspend fun insertFavouriteMovie(
         id: Long? = null,
         title: String,

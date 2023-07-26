@@ -73,8 +73,27 @@ fun OverviewScreen(
         voteAverage = voteAverage.toDouble()
     )
 
-    OverviewScreenUi(title, overview, releaseDate, posterPath, voteAverage, navController) {
-        viewModel.insertFavouriteMovie(movie)
+    viewModel.checkIfMovieIsFavourite(title)
+
+    val isFavouriteMovie = viewModel.uiState.isMovieFavourite
+    val movieId = viewModel.uiState.movieId
+
+    OverviewScreenUi(
+        title,
+        overview,
+        releaseDate,
+        posterPath,
+        voteAverage,
+        navController,
+        isFavouriteMovie
+    ) {
+        if (isFavouriteMovie) {
+            movieId?.let {
+                viewModel.deleteFavouriteMovie(it)
+            }
+        } else {
+            viewModel.insertFavouriteMovie(movie)
+        }
     }
 }
 
@@ -87,6 +106,7 @@ fun OverviewScreenUi(
     posterPath: String,
     voteAverage: String,
     navController: NavHostController?,
+    isMovieFavourite: Boolean,
     onAddFavouriteClick: (MovieModel) -> Unit
 ) {
     val spacing = LocalSpacing.current
@@ -116,7 +136,7 @@ fun OverviewScreenUi(
                 Icon(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = null,
-                    tint = MovieYellow,
+                    tint = if (isMovieFavourite) MovieYellow else Color.White,
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -252,7 +272,8 @@ fun OverviewScreenPreview() {
         releaseDate = "01/03/2023",
         posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%20maverick-min.png",
         voteAverage = "8.5",
-        navController = null
+        navController = null,
+        false
     ) {
 
     }
