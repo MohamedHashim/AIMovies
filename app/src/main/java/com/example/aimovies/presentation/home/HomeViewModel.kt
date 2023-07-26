@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.aimovies.BuildConfig
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.domain.mapper.toMovieModel
-import com.example.aimovies.domain.use_case.DeleteFavouriteMovie
 import com.example.aimovies.domain.use_case.GetDiscoverMovie
 import com.example.aimovies.domain.use_case.GetFavouriteMovies
 import com.example.aimovies.presentation.home.mapper.toMovieModel
@@ -20,9 +19,8 @@ import kotlinx.coroutines.launch
  */
 class HomeViewModel(
     private val getDiscoverMovieUseCase: GetDiscoverMovie,
-    private val getFavouriteMoviesUseCase: GetFavouriteMovies,
-    private val deleteFavouriteMovieUseCase: DeleteFavouriteMovie
-) : ViewModel() {
+    private val getFavouriteMoviesUseCase: GetFavouriteMovies
+    ) : ViewModel() {
     var uiState by mutableStateOf(HomeUiModel())
         private set
 

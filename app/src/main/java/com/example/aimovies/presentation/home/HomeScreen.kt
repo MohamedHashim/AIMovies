@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.aimovies.domain.model.MovieModel
 import com.example.aimovies.presentation.home.composables.ErrorView
 import com.example.aimovies.presentation.home.composables.MovieHorizontalItem
@@ -90,7 +89,7 @@ fun HomeScreenUi(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(contentAlignment = Alignment.Center) {
                 if (uiState.isLoading) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(modifier = Modifier.padding(spacing.spaceMedium))
                 }
                 LazyRow(
                     modifier = Modifier
@@ -100,7 +99,7 @@ fun HomeScreenUi(
                         MovieItem(
                             modifier = Modifier.padding(
                                 start = if (index == 0) spacing.spaceMedium else spacing.spaceExtraSmall,
-                                end = if (index == uiState.discoverMovieList.size - 1) 16.dp else spacing.spaceExtraSmall,
+                                end = if (index == uiState.discoverMovieList.size - 1) spacing.spaceMedium else spacing.spaceExtraSmall,
                                 bottom = spacing.spaceMedium,
                                 top = spacing.spaceMedium
                             ), movie = movie

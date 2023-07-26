@@ -37,7 +37,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -120,7 +119,7 @@ fun OverviewScreenUi(
             .background(Color.White),
         floatingActionButton = {
             FloatingActionButton(
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(spacing.curvedCornerSize),
                 onClick = {
                     onAddFavouriteClick(
                         MovieModel(
@@ -137,7 +136,7 @@ fun OverviewScreenUi(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = null,
                     tint = if (isMovieFavourite) MovieYellow else Color.White,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(spacing.spaceMedium)
                 )
             }
         },
@@ -172,7 +171,7 @@ fun OverviewScreenUi(
                         AsyncImage(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(400.dp)
+                                .height(spacing.overviewImageSize)
                                 .clip(
                                     RoundedCornerShape(
                                         bottomStart = spacing.curvedCornerSize,
@@ -246,7 +245,7 @@ fun OverviewScreenUi(
                     contentDescription = null,
                     modifier = Modifier
                         .padding(start = spacing.spaceMedium, top = spacing.spaceMedium)
-                        .size(30.dp)
+                        .size(spacing.spaceLarge)
                         .clip(
                             RoundedCornerShape(
                                 bottomStart = spacing.curvedCornerSize,

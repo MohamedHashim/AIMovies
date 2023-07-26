@@ -30,7 +30,7 @@ val homeModule = module {
         DeleteFavouriteMovie(get())
     }
     viewModel {
-        HomeViewModel(get(), get(), get())
+        HomeViewModel(get(), get())
     }
     viewModel {
         OverviewViewModel(get(), get(), get())
