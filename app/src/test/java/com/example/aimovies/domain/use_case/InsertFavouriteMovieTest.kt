@@ -2,6 +2,7 @@ package com.example.aimovies.domain.use_case
 
 import com.example.aimovies.data.repository.favourite.FavouriteMovieRepository
 import com.example.aimovies.stub.favouriteEntityStub
+import com.example.aimovies.stub.movieModelStub
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -10,38 +11,29 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Created by A.Elkhami on 26/07/2023.
+ * Created by A.Elkhami on 27/07/2023.
  */
-class GetFavouriteMovieTest {
+class InsertFavouriteMovieTest {
 
     private lateinit var repository: FavouriteMovieRepository
-    private lateinit var useCase: GetFavouriteMovie
+    private lateinit var useCase: InsertFavouriteMovie
 
     @Before
     fun setUp() {
-        repository = mockk()
-        useCase = GetFavouriteMovie(repository)
+        repository = mockk(relaxed = true)
+        useCase = InsertFavouriteMovie(repository)
     }
 
     @Test
-    fun getFavouriteMovie_returnFavouriteMovie() {
+    fun insertFavouriteMovie_movieInserted(){
         coEvery { repository.getFavouriteMovie("title") } returns favouriteEntityStub
 
         runTest {
-            val result = useCase("title")
+            useCase(movieModelStub)
+
+            val result = repository.getFavouriteMovie("title")
 
             assertEquals(favouriteEntityStub, result)
-        }
-    }
-
-    @Test
-    fun getFavouriteMovie_returnNull() {
-        coEvery { repository.getFavouriteMovie("title") } returns null
-
-        runTest {
-            val result = useCase("title")
-
-            assertEquals(null, result)
         }
     }
 }

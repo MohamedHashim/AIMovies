@@ -99,6 +99,7 @@ dependencies {
     def sql_delight_version = "1.5.5"
     implementation "com.squareup.sqldelight:android-driver:$sql_delight_version"
     implementation "com.squareup.sqldelight:coroutines-extensions-jvm:$sql_delight_version"
+    testImplementation "com.squareup.sqldelight:sqlite-driver:$sql_delight_version"
 
     //Mockk
     testImplementation "io.mockk:mockk:1.13.5"

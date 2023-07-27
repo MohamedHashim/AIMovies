@@ -1,10 +1,11 @@
 package com.example.aimovies.presentation.overveiw
 
 import com.example.aimovies.MainDispatcherRule
-import com.example.aimovies.data.repository.favourite.favouriteEntityStub
+import com.example.aimovies.domain.model.MovieModel
 import com.example.aimovies.domain.use_case.DeleteFavouriteMovie
 import com.example.aimovies.domain.use_case.GetFavouriteMovie
 import com.example.aimovies.domain.use_case.InsertFavouriteMovie
+import com.example.aimovies.stub.favouriteEntityStub
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,13 +32,11 @@ class OverviewViewModelTest {
 
     @Before
     fun setUp() {
-        insertFavouriteMovieUseCase = mockk()
+        insertFavouriteMovieUseCase = mockk(relaxed = true)
         getFavouriteMovieUseCase = mockk()
-        deleteFavouriteMovieUseCase = mockk()
+        deleteFavouriteMovieUseCase = mockk(relaxed = true)
         viewModel = OverviewViewModel(
-            insertFavouriteMovieUseCase,
-            getFavouriteMovieUseCase,
-            deleteFavouriteMovieUseCase
+            insertFavouriteMovieUseCase, getFavouriteMovieUseCase, deleteFavouriteMovieUseCase
         )
     }
 
@@ -58,6 +57,39 @@ class OverviewViewModelTest {
         runTest {
             viewModel.checkIfMovieIsFavourite("title")
         }
+        assertFalse(viewModel.uiState.isMovieFavourite)
+    }
+
+    @Test
+    fun insertFavouriteMovie_movieInserted() {
+        viewModel.insertFavouriteMovie(
+            MovieModel(
+                id = 1,
+                title = "title",
+                overview = "overview",
+                posterPath = "",
+                voteAverage = 9.0,
+                releaseDate = "10/10/2023"
+            )
+        )
+        coEvery { getFavouriteMovieUseCase("title") } returns favouriteEntityStub
+        runTest {
+            viewModel.checkIfMovieIsFavourite("title")
+        }
+        assertTrue(viewModel.uiState.isMovieFavourite)
+    }
+
+    @Test
+    fun deleteFavouriteMovie_movieDeleted() {
+        viewModel.deleteFavouriteMovie(
+            1
+        )
+        coEvery { getFavouriteMovieUseCase("title") } returns null
+
+        runTest {
+            viewModel.checkIfMovieIsFavourite("title")
+        }
+
         assertFalse(viewModel.uiState.isMovieFavourite)
     }
 }

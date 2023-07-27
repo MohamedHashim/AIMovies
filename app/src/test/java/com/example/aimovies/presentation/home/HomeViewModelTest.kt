@@ -2,12 +2,12 @@ package com.example.aimovies.presentation.home
 
 import com.example.aimovies.MainDispatcherRule
 import com.example.aimovies.data.remote.api_handler.Result
-import com.example.aimovies.data.repository.favourite.favouriteEntityStub
 import com.example.aimovies.domain.use_case.GetDiscoverMovie
 import com.example.aimovies.domain.use_case.GetFavouriteMovies
 import com.example.aimovies.presentation.home.mapper.toMovieModel
 import com.example.aimovies.stub.discoverMovieModelStub
 import com.example.aimovies.stub.discoverMovieResponseStub
+import com.example.aimovies.stub.favouriteEntityStub
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

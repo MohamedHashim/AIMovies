@@ -1,13 +1,12 @@
 package com.example.aimovies.domain.use_case
 
 import com.example.aimovies.data.repository.favourite.FavouriteMovieRepository
-import com.example.aimovies.data.repository.favourite.favouriteEntityStub
+import com.example.aimovies.stub.favouriteEntityStub
 import example.moviedb.FavouriteEntitiy
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
-import org.junit.Assert.*
-
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 

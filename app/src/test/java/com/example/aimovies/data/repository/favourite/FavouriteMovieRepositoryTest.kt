@@ -1,10 +1,15 @@
 package com.example.aimovies.data.repository.favourite
 
-import com.example.aimovies.data.local.FavouriteMovieDataSource
+import com.example.aimovies.MovieDatabase
+import com.example.aimovies.data.local.FavouriteMovieDataSourceImpl
+import com.example.aimovies.stub.favouriteEntityStub
+import com.example.aimovies.stub.movieLocalStub
+import com.squareup.sqldelight.runtime.coroutines.asFlow
+import com.squareup.sqldelight.runtime.coroutines.mapToList
+import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import example.moviedb.FavouriteEntitiy
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -16,32 +21,57 @@ import org.junit.Test
  */
 class FavouriteMovieRepositoryTest {
 
-    private lateinit var dataSource: FavouriteMovieDataSource
+    private lateinit var driver: JdbcSqliteDriver
+    private lateinit var dataSource: FavouriteMovieDataSourceImpl
     private lateinit var repository: FavouriteMovieRepositoryImpl
 
     @Before
     fun setUp() {
-        dataSource = mockk()
+        driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+        MovieDatabase.Schema.create(driver)
+
+        dataSource = FavouriteMovieDataSourceImpl(MovieDatabase(driver), Dispatchers.Default)
         repository = FavouriteMovieRepositoryImpl(dataSource)
     }
 
     @Test
     fun getFavouriteMovies_returnFavouriteMoviesList() {
-        val expected = flow<List<FavouriteEntitiy>> {
-            listOf(
-                favouriteEntityStub
-            )
+        val queries = MovieDatabase(driver).favouriteEntitiyQueries
+
+        queries.insertFavouriteMovie(
+            id = favouriteEntityStub.id,
+            title = favouriteEntityStub.title,
+            overview = favouriteEntityStub.overview,
+            posterPath = favouriteEntityStub.posterPath,
+            voteAverage = favouriteEntityStub.voteAverage,
+            releaseDate = favouriteEntityStub.releaseDate
+        )
+        runTest {
+            val expected = flow<List<FavouriteEntitiy>> {
+                emit(
+                    listOf(
+                        favouriteEntityStub
+                    )
+                )
+            }.first()
+            val result = repository.getFavouriteMovies().first()
+
+            assertEquals(expected, result)
         }
-        every { dataSource.getFavouriteMovies() } returns expected
-
-        val result = repository.getFavouriteMovies()
-
-        assertEquals(expected, result)
     }
 
     @Test
     fun getFavouriteMovie_returnFavouriteMovie() {
-        coEvery { dataSource.getFavouriteMovie("title") } returns favouriteEntityStub
+        val queries = MovieDatabase(driver).favouriteEntitiyQueries
+
+        queries.insertFavouriteMovie(
+            id = favouriteEntityStub.id,
+            title = favouriteEntityStub.title,
+            overview = favouriteEntityStub.overview,
+            posterPath = favouriteEntityStub.posterPath,
+            voteAverage = favouriteEntityStub.voteAverage,
+            releaseDate = favouriteEntityStub.releaseDate
+        )
 
         runTest {
             val result = repository.getFavouriteMovie("title")
@@ -52,8 +82,6 @@ class FavouriteMovieRepositoryTest {
 
     @Test
     fun getFavouriteMovie_returnNull() {
-        coEvery { dataSource.getFavouriteMovie("title") } returns null
-
         runTest {
             val result = repository.getFavouriteMovie("title")
 
@@ -63,29 +91,45 @@ class FavouriteMovieRepositoryTest {
 
     @Test
     fun insertFavouriteMovie_movieInserted() {
-        coEvery {
-            dataSource.insertFavouriteMovie(
-                id = 1,
-                title = "",
-                overview = "",
-                posterPath = "",
-                releaseDate = "",
-                voteAverage = ""
+        val queries = MovieDatabase(driver).favouriteEntitiyQueries
+
+        runTest {
+
+            val favouriteList = queries.getFavouriteMovies().asFlow().mapToList()
+
+            val beforeCount = favouriteList.first().count()
+
+            repository.insertFavouriteMovie(
+                movieLocalStub
             )
+
+            val afterCount = favouriteList.first().count()
+
+            assertEquals(afterCount, beforeCount + 1)
         }
     }
 
     @Test
     fun deleteFavouriteMovie_movieDeleted() {
-        coEvery { dataSource.deleteFavouriteMovie(1) }
+        val queries = MovieDatabase(driver).favouriteEntitiyQueries
+
+        runTest {
+
+            val favouriteList = queries.getFavouriteMovies().asFlow().mapToList()
+
+            repository.insertFavouriteMovie(
+                movieLocalStub
+            )
+
+            val beforeCount = favouriteList.first().count()
+
+            repository.deleteFavouriteMovie(
+                1
+            )
+
+            val afterCount = favouriteList.first().count()
+
+            assertEquals(afterCount, beforeCount - 1)
+        }
     }
 }
-
-val favouriteEntityStub = FavouriteEntitiy(
-    id = 1,
-    title = "title",
-    overview = "overview",
-    posterPath = "",
-    voteAverage = "9.0",
-    releaseDate = "10/10/2023"
-)
