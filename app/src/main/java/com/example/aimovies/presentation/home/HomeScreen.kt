@@ -9,6 +9,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,10 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.aimovies.domain.model.MovieModel
+import com.example.aimovies.presentation.home.composables.EmptyListView
 import com.example.aimovies.presentation.home.composables.ErrorView
 import com.example.aimovies.presentation.home.composables.MovieHorizontalItem
 import com.example.aimovies.presentation.home.composables.MovieItem
 import com.example.aimovies.presentation.home.composables.ToggleButton
+import com.example.aimovies.presentation.home.composables.rememberForeverLazyListState
 import com.example.aimovies.presentation.ui.LocalSpacing
 import com.example.aimovies.presentation.ui.theme.AIMoviesTheme
 import org.koin.androidx.compose.koinViewModel
@@ -119,10 +124,15 @@ fun HomeScreenUi(
                 selectedTab = it
             }
             if (selectedTab == "Favorites") {
+                if (uiState.favouriteMovieList.isEmpty()) {
+                    EmptyListView(Icons.Default.Favorite, "No favourite movies yet.")
+                }
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = spacing.spaceExtraSmall)
+                        .padding(top = spacing.spaceExtraSmall),
+                    state = rememberForeverLazyListState(key = "Overview")
                 ) {
                     itemsIndexed(uiState.favouriteMovieList) { index, movie ->
                         MovieHorizontalItem(
@@ -138,6 +148,8 @@ fun HomeScreenUi(
                     }
                 }
             } else {
+                EmptyListView(Icons.Default.ThumbUp, "No recommendations available yet")
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()

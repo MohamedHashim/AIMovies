@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -29,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -174,11 +176,27 @@ fun OverviewScreenUi(
                                 .height(spacing.overviewImageSize)
                                 .clip(
                                     RoundedCornerShape(
-                                        bottomStart = spacing.curvedCornerSize,
-                                        bottomEnd = spacing.curvedCornerSize
+                                        bottomStart = spacing.spaceLarge,
+                                        bottomEnd = spacing.spaceLarge
                                     )
-                                ),
+                                )
+                                .blur(spacing.spaceLarge, spacing.spaceLarge),
                             contentScale = ContentScale.FillWidth,
+                            model = posterPath,
+                            onLoading = {
+
+                            },
+                            error = painterResource(id = R.drawable.movie_placeholder),
+                            contentDescription = null
+                        )
+                        AsyncImage(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(spacing.overviewImageSize)
+                                .clip(
+                                    RoundedCornerShape(spacing.spaceExtraLarge)
+                                ),
+                            contentScale = ContentScale.Fit,
                             model = posterPath,
                             onLoading = {
 
@@ -239,24 +257,21 @@ fun OverviewScreenUi(
                         )
                     }
                 }
-                Icon(
-                    Icons.Rounded.ArrowBack,
-                    tint = Color.White,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(start = spacing.spaceMedium, top = spacing.spaceMedium)
-                        .size(spacing.spaceLarge)
-                        .clip(
-                            RoundedCornerShape(
-                                bottomStart = spacing.curvedCornerSize,
-                                bottomEnd = spacing.curvedCornerSize
-                            )
-                        )
-                        .clickable {
-                            navController?.popBackStack()
-                        }
-                        .align(Alignment.TopStart)
-                )
+                Box(modifier = Modifier
+                    .padding(start = spacing.spaceMedium, top = spacing.spaceMedium)
+                    .align(Alignment.TopStart)
+                    .clip(CircleShape)
+                    .background(Color.White)
+                    .clickable {
+                        navController?.popBackStack()
+                    }
+                    .padding(spacing.spaceSmall)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.ArrowBack,
+                        contentDescription = null
+                    )
+                }
             }
         }
     }
