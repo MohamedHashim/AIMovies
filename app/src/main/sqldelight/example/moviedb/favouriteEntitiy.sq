@@ -1,0 +1,26 @@
+CREATE TABLE favouriteEntitiy (
+id INTEGER NOT NULL PRIMARY KEY,
+title TEXT NOT NULL,
+overview TEXT NOT NULL,
+posterPath TEXT NOT NULL,
+voteAverage TEXT NOT NULL,
+releaseDate TEXT NOT NULL
+);
+
+getFavouriteMovies:
+SELECT *
+FROM favouriteEntitiy;
+
+getFavouriteMovie:
+SELECT *
+FROM favouriteEntitiy
+WHERE title = :title;
+
+insertFavouriteMovie:
+INSERT OR REPLACE
+INTO favouriteEntitiy
+VALUES (?, ?, ?, ?, ?, ?);
+
+deleteFavouriteMovie:
+DELETE FROM favouriteEntitiy
+WHERE id = :id;
