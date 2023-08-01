@@ -50,9 +50,6 @@ fun MovieHorizontalItem(
     Row(modifier = modifier
         .fillMaxWidth()
         .height(IntrinsicSize.Max)
-        .padding(
-            spacing.spaceExtraSmall
-        )
         .clip(RoundedCornerShape(spacing.curvedCornerSize))
         .clickable {
             onClick(movie)
