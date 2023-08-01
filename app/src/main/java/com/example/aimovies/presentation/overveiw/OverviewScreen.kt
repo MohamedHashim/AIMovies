@@ -53,6 +53,7 @@ import com.example.aimovies.domain.model.MovieModel
 import com.example.aimovies.presentation.home.composables.LoadingAnimation
 import com.example.aimovies.presentation.ui.LocalSpacing
 import com.example.aimovies.presentation.ui.theme.MovieYellow
+import com.example.aimovies.presentation.ui.theme.RateBackground
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
 import com.gowtham.ratingbar.StepSize
@@ -236,7 +237,11 @@ fun OverviewScreenUi(
                                 },
                                 onRatingChanged = {
                                     onRatingSelected(it)
-                                }
+                                },
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(spacing.spaceMedium))
+                                    .background(RateBackground)
+                                    .padding(spacing.spaceMedium)
                             )
                         }
                     }

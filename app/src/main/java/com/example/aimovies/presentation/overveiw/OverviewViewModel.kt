@@ -69,6 +69,7 @@ class OverviewViewModel(
             updateMovieRating(movieId, rating)
         } else {
             insertMovieRating(movieId, rating)
+            isRatingAvailable = true
         }
     }
 
