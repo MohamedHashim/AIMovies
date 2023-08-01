@@ -170,6 +170,6 @@ fun HomeScreenUi(
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
     AIMoviesTheme {
-        HomeScreenUi(HomeUiModel(emptyList()), {}, {})
+        HomeScreenUi(HomeUiModel(HomeUiModel().discoverMovieList), {}, {})
     }
 }
