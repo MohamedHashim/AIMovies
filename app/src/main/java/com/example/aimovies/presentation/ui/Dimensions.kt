@@ -25,7 +25,8 @@ data class Dimensions(
     val placeholderWidth: Dp = 130.dp,
     val toggleButtonWidth: Dp = 160.dp,
     val placeholderHeight: Dp = 180.dp,
-    val overviewImageSize: Dp = 400.dp,
+    val overviewImageSize: Dp = 300.dp,
+    val overviewImageBackgroundSize: Dp = 400.dp,
     val discoverMoviesLoaderTopPadding: Dp = 80.dp,
     val fontTitle: TextUnit = 26.sp
 )

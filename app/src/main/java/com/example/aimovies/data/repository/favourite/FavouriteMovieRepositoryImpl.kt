@@ -1,7 +1,7 @@
 package com.example.aimovies.data.repository.favourite
 
-import com.example.aimovies.data.local.FavouriteMovieDataSource
-import com.example.aimovies.data.local.dto.MovieLocal
+import com.example.aimovies.data.local.favourite.FavouriteMovieDataSource
+import com.example.aimovies.data.local.favourite.dto.MovieLocal
 import example.moviedb.FavouriteEntitiy
 import kotlinx.coroutines.flow.Flow
 
@@ -14,13 +14,13 @@ class FavouriteMovieRepositoryImpl(private val dataSource: FavouriteMovieDataSou
         return dataSource.getFavouriteMovies()
     }
 
-    override suspend fun getFavouriteMovie(title: String): FavouriteEntitiy? {
-        return dataSource.getFavouriteMovie(title)
+    override suspend fun getFavouriteMovie(movieId: Long): FavouriteEntitiy? {
+        return dataSource.getFavouriteMovie(movieId)
     }
 
     override suspend fun insertFavouriteMovie(movie: MovieLocal) {
         dataSource.insertFavouriteMovie(
-            movie.id,
+            movie.movieId,
             movie.title,
             movie.overview,
             movie.posterPath,

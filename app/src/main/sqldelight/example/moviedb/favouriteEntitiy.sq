@@ -1,5 +1,6 @@
 CREATE TABLE favouriteEntitiy (
 id INTEGER NOT NULL PRIMARY KEY,
+movieId INTEGER NOT NULL,
 title TEXT NOT NULL,
 overview TEXT NOT NULL,
 posterPath TEXT NOT NULL,
@@ -14,13 +15,13 @@ FROM favouriteEntitiy;
 getFavouriteMovie:
 SELECT *
 FROM favouriteEntitiy
-WHERE title = :title;
+WHERE movieId = :movieId;
 
 insertFavouriteMovie:
 INSERT OR REPLACE
 INTO favouriteEntitiy
-VALUES (?, ?, ?, ?, ?, ?);
+VALUES (?, ?, ?, ?, ?, ?, ?);
 
 deleteFavouriteMovie:
 DELETE FROM favouriteEntitiy
-WHERE id = :id;
+WHERE movieId = :movieId;

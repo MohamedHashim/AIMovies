@@ -24,6 +24,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val overViewArguments = listOf(
+            navArgument("id") {
+                type = NavType.LongType
+            },
             navArgument("title") {
                 type = NavType.StringType
             },
@@ -52,25 +55,35 @@ class MainActivity : ComponentActivity() {
                         navController = navController, startDestination = "home"
                     ) {
                         composable("home") {
-                            HomeScreen { title, overview, releaseDate, posterPath, voteAverage ->
+                            HomeScreen { id, title, overview, releaseDate, posterPath, voteAverage ->
                                 navController.navigate(
-                                    "overview/$title/$overview/$releaseDate/$posterPath/$voteAverage"
+                                    "overview/$id/$title/$overview/$releaseDate/$posterPath/$voteAverage"
                                 )
                             }
                         }
                         composable(
-                            route = "overview/{title}/{overview}/{release_date}/{poster_path}/{vote_average}",
+                            route = "overview/{id}/{title}/{overview}/{release_date}/{poster_path}/{vote_average}",
                             arguments = overViewArguments
                         ) { backStackEntry ->
+                            val id = backStackEntry.arguments?.getLong("id") ?: 0L
                             val title = backStackEntry.arguments?.getString("title") ?: ""
                             val overview = backStackEntry.arguments?.getString("overview") ?: ""
                             val releaseDate =
                                 backStackEntry.arguments?.getString("release_date") ?: ""
-                            val posterPath = backStackEntry.arguments?.getString("poster_path") ?: ""
+                            val posterPath =
+                                backStackEntry.arguments?.getString("poster_path") ?: ""
                             val voteAverage =
                                 backStackEntry.arguments?.getString("vote_average") ?: ""
 
-                            OverviewScreen(title, overview, releaseDate, posterPath, voteAverage, navController)
+                            OverviewScreen(
+                                id,
+                                title,
+                                overview,
+                                releaseDate,
+                                posterPath,
+                                voteAverage,
+                                navController
+                            )
                         }
                     }
                 }

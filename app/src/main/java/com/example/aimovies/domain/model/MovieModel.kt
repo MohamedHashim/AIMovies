@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class MovieModel(
-    val id: Long? = null,
+    val movieId: Long,
     val overview: String,
     val posterPath: String,
     val releaseDate: String,

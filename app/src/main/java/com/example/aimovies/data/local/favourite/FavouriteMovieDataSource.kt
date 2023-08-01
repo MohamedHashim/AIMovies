@@ -1,4 +1,4 @@
-package com.example.aimovies.data.local
+package com.example.aimovies.data.local.favourite
 
 import example.moviedb.FavouriteEntitiy
 import kotlinx.coroutines.flow.Flow
@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 interface FavouriteMovieDataSource {
     fun getFavouriteMovies(): Flow<List<FavouriteEntitiy>>
 
-    suspend fun getFavouriteMovie(title: String): FavouriteEntitiy?
+    suspend fun getFavouriteMovie(movieId: Long): FavouriteEntitiy?
 
     suspend fun insertFavouriteMovie(
-        id: Long? = null,
+        movieId: Long,
         title: String,
         overview: String,
         posterPath: String,
@@ -20,5 +20,5 @@ interface FavouriteMovieDataSource {
         releaseDate: String
     )
 
-    suspend fun deleteFavouriteMovie(id: Long)
+    suspend fun deleteFavouriteMovie(movieId: Long)
 }

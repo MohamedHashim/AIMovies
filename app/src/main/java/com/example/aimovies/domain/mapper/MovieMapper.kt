@@ -1,6 +1,6 @@
 package com.example.aimovies.domain.mapper
 
-import com.example.aimovies.data.local.dto.MovieLocal
+import com.example.aimovies.data.local.favourite.dto.MovieLocal
 import com.example.aimovies.data.remote.dto.Movie
 import com.example.aimovies.domain.model.MovieModel
 
@@ -8,6 +8,7 @@ import com.example.aimovies.domain.model.MovieModel
  * Created by A.Elkhami on 18/07/2023.
  */
 fun Movie.toMovieModel() = MovieModel(
+    movieId = id.toLong(),
     title = title,
     overview = overview,
     releaseDate = release_date,
@@ -16,7 +17,7 @@ fun Movie.toMovieModel() = MovieModel(
 )
 
 fun MovieModel.toMovieLocalDto() = MovieLocal(
-    id = id,
+    movieId = movieId,
     title = title,
     overview = overview,
     releaseDate = releaseDate,

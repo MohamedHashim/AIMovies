@@ -42,7 +42,7 @@ import java.nio.charset.StandardCharsets
  */
 @Composable
 fun HomeScreen(
-    onNavigateToOverview: (String, String, String, String, String) -> Unit
+    onNavigateToOverview: (Long, String, String, String, String, String) -> Unit
 ) {
     val viewModel = koinViewModel<HomeViewModel>()
     LaunchedEffect(key1 = true) {
@@ -53,6 +53,7 @@ fun HomeScreen(
         viewModel.uiState,
         onNavigateToOverview = {
             onNavigateToOverview(
+                it.movieId,
                 it.title,
                 it.overview,
                 it.releaseDate,

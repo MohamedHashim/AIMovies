@@ -117,6 +117,7 @@ fun MovieHorizontalItemPreview() {
         MovieHorizontalItem(
             modifier = Modifier,
             movie = MovieModel(
+                movieId = 1,
                 overview = "test",
                 title = "The Demon Barber of Fleet Street",
                 voteAverage = 8.5,
