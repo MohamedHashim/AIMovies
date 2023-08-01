@@ -109,37 +109,6 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.2.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
-
-    def nav_version = "2.6.0"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
-
-    //Ktor
-    def ktor_version = "2.3.2"
-    implementation "io.ktor:ktor-client-core:$ktor_version"
-    implementation "io.ktor:ktor-client-android:$ktor_version"
-    implementation "io.ktor:ktor-client-logging:$ktor_version"
-    implementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
-    implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
-
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
-
-    //Koin
-    def koin_version = '3.4.1'
-    implementation "io.insert-koin:koin-android:$koin_version"
-    implementation "io.insert-koin:koin-androidx-compose:3.4.5"
-
-    //Coil
-    implementation "io.coil-kt:coil-compose:2.4.0"
-
-    // SQL Delight
-    def sql_delight_version = "1.5.5"
-    implementation "com.squareup.sqldelight:android-driver:$sql_delight_version"
-    implementation "com.squareup.sqldelight:coroutines-extensions-jvm:$sql_delight_version"
-    testImplementation "com.squareup.sqldelight:sqlite-driver:$sql_delight_version"
-
-    //Mockk
-    testImplementation "io.mockk:mockk:1.13.5"
-
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
 
