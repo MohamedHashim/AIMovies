@@ -10,8 +10,10 @@ import com.example.aimovies.domain.use_case.DeleteFavouriteMovie
 import com.example.aimovies.domain.use_case.GetFavouriteMovie
 import com.example.aimovies.domain.use_case.GetMovieRating
 import com.example.aimovies.domain.use_case.InsertFavouriteMovie
-import com.example.aimovies.domain.use_case.InsertMovieRating
-import com.example.aimovies.domain.use_case.UpdateMovieRating
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 /**
@@ -26,6 +28,8 @@ class OverviewViewModel(
     private val updateMovieRatingUseCase: UpdateMovieRating
 ) :
     ViewModel() {
+
+    private var firebaseAnalytics: FirebaseAnalytics = Firebase.analytics
 
     var isRatingAvailable = false
 
@@ -46,6 +50,9 @@ class OverviewViewModel(
         viewModelScope.launch {
             insertFavouriteMovieUseCase(movie)
             uiState = uiState.copy(isMovieFavourite = true)
+        }
+        movie.id?.let{
+            logAddFavouriteMovieEvent(it)
         }
     }
 
@@ -83,6 +90,14 @@ class OverviewViewModel(
     fun updateMovieRating(movieId: Long, rating: Float) {
         viewModelScope.launch {
             updateMovieRatingUseCase(movieId, rating)
+        }
+    }
+
+    fun logAddFavouriteMovieEvent(
+        movieId: Long
+    ){
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
+            param(FirebaseAnalytics.Param.ITEM_ID, movieId)
         }
     }
 }

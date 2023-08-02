@@ -4,6 +4,7 @@ plugins {
     id 'kotlinx-serialization'
     id 'kotlin-kapt'
     id 'com.squareup.sqldelight'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -107,6 +108,10 @@ dependencies {
 
     //Mockk
     testImplementation "io.mockk:mockk:1.13.5"
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:32.2.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
