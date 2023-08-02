@@ -24,12 +24,12 @@ class DeleteFavouriteMovieTest {
 
     @Test
     fun deleteFavouriteMovie_movieDeleted(){
-        coEvery { repository.getFavouriteMovie("title") } returns null
+        coEvery { repository.getFavouriteMovie(1) } returns null
 
         runTest {
             useCase(1)
 
-            val result = repository.getFavouriteMovie("title")
+            val result = repository.getFavouriteMovie(1)
 
             assertEquals(null, result)
         }

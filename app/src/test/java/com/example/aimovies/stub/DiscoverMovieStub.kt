@@ -16,7 +16,7 @@ val discoverMovieResponseStub = DiscoverMovieResponse(
             poster_path = "123",
             release_date = "10/10/2023",
             overview = "overview",
-            id = 1,
+            id = 123,
             genre_ids = listOf(1, 2),
             original_language = "",
             original_title = "",
@@ -32,6 +32,7 @@ val discoverMovieResponseStub = DiscoverMovieResponse(
 val discoverMovieModelStub = listOf(
     MovieModel(
         title = "title",
+        movieId = 123,
         overview = "overview",
         posterPath = "https://image.tmdb.org/t/p/original123",
         voteAverage = 9.0,

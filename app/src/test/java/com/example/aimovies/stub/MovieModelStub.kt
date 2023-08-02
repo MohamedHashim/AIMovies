@@ -6,7 +6,7 @@ import com.example.aimovies.domain.model.MovieModel
  * Created by A.Elkhami on 27/07/2023.
  */
 val movieModelStub = MovieModel(
-    id = 1,
+    movieId = 1,
     title = "title",
     overview = "overview",
     posterPath = "",

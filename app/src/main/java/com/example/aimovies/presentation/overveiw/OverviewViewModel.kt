@@ -28,6 +28,7 @@ class OverviewViewModel(
     ViewModel() {
 
     var isRatingAvailable = false
+
     var uiState by mutableStateOf(OverviewUIModel())
         private set
 

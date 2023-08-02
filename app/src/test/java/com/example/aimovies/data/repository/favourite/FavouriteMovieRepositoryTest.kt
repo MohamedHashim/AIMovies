@@ -76,7 +76,7 @@ class FavouriteMovieRepositoryTest {
         )
 
         runTest {
-            val result = repository.getFavouriteMovie(1)
+            val result = repository.getFavouriteMovie(123)
 
             assertEquals(favouriteEntityStub, result)
         }

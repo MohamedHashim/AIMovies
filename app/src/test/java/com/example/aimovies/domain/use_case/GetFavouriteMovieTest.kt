@@ -25,10 +25,10 @@ class GetFavouriteMovieTest {
 
     @Test
     fun getFavouriteMovie_returnFavouriteMovie() {
-        coEvery { repository.getFavouriteMovie("title") } returns favouriteEntityStub
+        coEvery { repository.getFavouriteMovie(1) } returns favouriteEntityStub
 
         runTest {
-            val result = useCase("title")
+            val result = useCase(1)
 
             assertEquals(favouriteEntityStub, result)
         }
@@ -36,10 +36,10 @@ class GetFavouriteMovieTest {
 
     @Test
     fun getFavouriteMovie_returnNull() {
-        coEvery { repository.getFavouriteMovie("title") } returns null
+        coEvery { repository.getFavouriteMovie(1) } returns null
 
         runTest {
-            val result = useCase("title")
+            val result = useCase(1)
 
             assertEquals(null, result)
         }

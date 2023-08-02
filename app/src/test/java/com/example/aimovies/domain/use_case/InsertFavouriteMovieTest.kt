@@ -26,12 +26,12 @@ class InsertFavouriteMovieTest {
 
     @Test
     fun insertFavouriteMovie_movieInserted(){
-        coEvery { repository.getFavouriteMovie("title") } returns favouriteEntityStub
+        coEvery { repository.getFavouriteMovie(1) } returns favouriteEntityStub
 
         runTest {
             useCase(movieModelStub)
 
-            val result = repository.getFavouriteMovie("title")
+            val result = repository.getFavouriteMovie(1)
 
             assertEquals(favouriteEntityStub, result)
         }
