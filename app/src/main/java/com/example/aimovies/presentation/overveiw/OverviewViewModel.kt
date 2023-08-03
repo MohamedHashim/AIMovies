@@ -74,7 +74,7 @@ class OverviewViewModel(
             insertMovieRating(movieId, rating)
             isRatingAvailable = true
         }
-        analytics.logAddFavouriteMovieEvent(movieId, rating.toDouble())
+        analytics.logMovieRatingEvent(movieId, rating.toDouble())
     }
 
     fun insertMovieRating(movieId: Long, rating: Float) {

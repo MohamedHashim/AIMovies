@@ -12,7 +12,7 @@ class FirebaseAnalyticsImpl: Analytics {
 
     private var firebaseAnalytics: FirebaseAnalytics = Firebase.analytics
 
-    override fun logAddFavouriteMovieEvent(movieId: Long, rating: Double) {
+    override fun logMovieRatingEvent(movieId: Long, rating: Double) {
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
             param(FirebaseAnalytics.Param.ITEM_ID, movieId)
             param(FirebaseAnalytics.Param.ITEM_NAME, rating)
