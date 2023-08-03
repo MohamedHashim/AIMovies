@@ -5,15 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.aimovies.analytics.Analytics
 import com.example.aimovies.domain.model.MovieModel
 import com.example.aimovies.domain.use_case.DeleteFavouriteMovie
 import com.example.aimovies.domain.use_case.GetFavouriteMovie
 import com.example.aimovies.domain.use_case.GetMovieRating
 import com.example.aimovies.domain.use_case.InsertFavouriteMovie
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.analytics.ktx.logEvent
-import com.google.firebase.ktx.Firebase
+import com.example.aimovies.domain.use_case.InsertMovieRating
+import com.example.aimovies.domain.use_case.UpdateMovieRating
 import kotlinx.coroutines.launch
 
 /**
@@ -25,11 +24,10 @@ class OverviewViewModel(
     private val deleteFavouriteMovieUseCase: DeleteFavouriteMovie,
     private val getMovieRatingUseCase: GetMovieRating,
     private val insertMovieRatingUseCase: InsertMovieRating,
-    private val updateMovieRatingUseCase: UpdateMovieRating
+    private val updateMovieRatingUseCase: UpdateMovieRating,
+    private val analytics: Analytics
 ) :
     ViewModel() {
-
-    private var firebaseAnalytics: FirebaseAnalytics = Firebase.analytics
 
     var isRatingAvailable = false
 
@@ -50,9 +48,6 @@ class OverviewViewModel(
         viewModelScope.launch {
             insertFavouriteMovieUseCase(movie)
             uiState = uiState.copy(isMovieFavourite = true)
-        }
-        movie.id?.let{
-            logAddFavouriteMovieEvent(it)
         }
     }
 
@@ -79,6 +74,7 @@ class OverviewViewModel(
             insertMovieRating(movieId, rating)
             isRatingAvailable = true
         }
+        analytics.logAddFavouriteMovieEvent(movieId, rating.toDouble())
     }
 
     fun insertMovieRating(movieId: Long, rating: Float) {
@@ -90,14 +86,6 @@ class OverviewViewModel(
     fun updateMovieRating(movieId: Long, rating: Float) {
         viewModelScope.launch {
             updateMovieRatingUseCase(movieId, rating)
-        }
-    }
-
-    fun logAddFavouriteMovieEvent(
-        movieId: Long
-    ){
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
-            param(FirebaseAnalytics.Param.ITEM_ID, movieId)
         }
     }
 }

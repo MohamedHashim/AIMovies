@@ -1,5 +1,7 @@
 package com.example.aimovies.di
 
+import com.example.aimovies.analytics.Analytics
+import com.example.aimovies.analytics.FirebaseAnalyticsImpl
 import com.example.aimovies.domain.use_case.DeleteFavouriteMovie
 import com.example.aimovies.domain.use_case.GetAllMovieRatings
 import com.example.aimovies.domain.use_case.GetDiscoverMovie
@@ -45,10 +47,13 @@ val homeModule = module {
     single {
         UpdateMovieRating(get())
     }
+    single<Analytics> {
+        FirebaseAnalyticsImpl()
+    }
     viewModel {
         HomeViewModel(get(), get())
     }
     viewModel {
-        OverviewViewModel(get(), get(), get(), get(), get(), get())
+        OverviewViewModel(get(), get(), get(), get(), get(), get(), get())
     }
 }

@@ -37,7 +37,7 @@ class HomeViewModel(
                     val results = data.results.map { movie ->
                         movie.copy(
                             poster_path = BuildConfig.POSTER_BASE_URL + movie.poster_path,
-                            release_date = movie.release_date.substringBefore("-")
+                            release_date = movie.release_date?.substringBefore("-") ?: ""
                         )
                     }
                     data = data.copy(results = results)
