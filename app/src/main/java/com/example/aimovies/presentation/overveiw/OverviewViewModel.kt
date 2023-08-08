@@ -67,14 +67,14 @@ class OverviewViewModel(
         }
     }
 
-    fun insertOrUpdateRating(movieId: Long, rating: Float) {
+    fun insertOrUpdateRating(movieId: Long, rating: Float, title: String, userId: Long) {
         if (isRatingAvailable) {
             updateMovieRating(movieId, rating)
         } else {
             insertMovieRating(movieId, rating)
             isRatingAvailable = true
         }
-        analytics.logMovieRatingEvent(movieId, rating.toDouble())
+        analytics.logMovieRatingEvent(movieId, userId, title, rating.toDouble())
     }
 
     fun insertMovieRating(movieId: Long, rating: Float) {

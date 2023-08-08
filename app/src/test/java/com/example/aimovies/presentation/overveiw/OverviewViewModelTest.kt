@@ -156,7 +156,7 @@ class OverviewViewModelTest {
     @Test
     fun insertOrUpdateRating_movieInserted() {
         viewModel.isRatingAvailable = false
-        viewModel.insertOrUpdateRating(123, 8.0f)
+        viewModel.insertOrUpdateRating(movieId = 123, title = "flash", rating = 8.0f, userId = 1)
         assertTrue(viewModel.isRatingAvailable)
     }
 
@@ -174,7 +174,7 @@ class OverviewViewModelTest {
         advanceUntilIdle()
         val beforeRating = viewModel.uiState.rating
 
-        viewModel.insertOrUpdateRating(123, 8.0f)
+        viewModel.insertOrUpdateRating(movieId = 123, title = "flash", rating = 8.0f, userId = 1)
 
 
         coEvery { getMovieRatingUseCase(123) } returns MovieRateEntity(

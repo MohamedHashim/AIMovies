@@ -8,14 +8,21 @@ import com.google.firebase.ktx.Firebase
 /**
  * Created by A.Elkhami on 03/08/2023.
  */
-class FirebaseAnalyticsImpl: Analytics {
+class FirebaseAnalyticsImpl : Analytics {
 
     private var firebaseAnalytics: FirebaseAnalytics = Firebase.analytics
 
-    override fun logMovieRatingEvent(movieId: Long, rating: Double) {
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
-            param(FirebaseAnalytics.Param.ITEM_ID, movieId)
-            param(FirebaseAnalytics.Param.ITEM_NAME, rating)
+    override fun logMovieRatingEvent(
+        movieId: Long,
+        userId: Long,
+        movieName: String,
+        rating: Double
+    ) {
+        firebaseAnalytics.logEvent("select_movie") {
+            param("movie_id", movieId)
+            param("movie_name", movieName)
+            param("user_id", userId)
+            param("movie_rating", rating)
         }
     }
 }

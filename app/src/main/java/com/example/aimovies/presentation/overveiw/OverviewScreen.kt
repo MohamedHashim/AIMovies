@@ -106,7 +106,12 @@ fun OverviewScreen(
             }
         },
         onRatingSelected = {
-            viewModel.insertOrUpdateRating(movieId = movieId, rating = it)
+            viewModel.insertOrUpdateRating(
+                movieId = movieId,
+                rating = it,
+                title = title,
+                userId = 1
+            )
         }
     )
 }
