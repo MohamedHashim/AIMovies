@@ -165,6 +165,8 @@ class OverviewViewModelTest {
     fun insertOrUpdateRating_movieUpdated() = runTest {
         viewModel.isRatingAvailable = true
 
+        val expectedRaring = 9.0f
+
         coEvery { getMovieRatingUseCase(123) } returns movieRateEntityStub
         viewModel.getMovieRating(123)
 
@@ -187,6 +189,7 @@ class OverviewViewModelTest {
         val afterRating = viewModel.uiState.rating
 
         assertNotEquals(beforeRating, afterRating)
+        assertEquals(expectedRaring, afterRating)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

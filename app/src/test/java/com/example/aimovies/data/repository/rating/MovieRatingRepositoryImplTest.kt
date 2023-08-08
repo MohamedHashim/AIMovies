@@ -97,6 +97,8 @@ class MovieRatingRepositoryImplTest {
     fun updateMovieRating_movieRatingUpdated() {
         val queries = db.movieRateEntitiyQueries
 
+        val expectedRating = 7.0
+
         runTest {
             repository.insertMovieRating(123, 8.0f)
             val ratedMovieBeforeUpdate = queries.getMovieRating(123).executeAsOneOrNull()
@@ -104,6 +106,7 @@ class MovieRatingRepositoryImplTest {
             val ratedMovieAfterUpdate = queries.getMovieRating(123).executeAsOneOrNull()
 
             assertNotEquals(ratedMovieBeforeUpdate?.rate, ratedMovieAfterUpdate?.rate)
+            assertEquals(expectedRating, ratedMovieAfterUpdate?.rate)
         }
     }
 }
