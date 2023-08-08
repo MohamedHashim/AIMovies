@@ -6,6 +6,7 @@ import example.moviedb.MovieRateEntity
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
@@ -28,6 +29,7 @@ class UpdateMovieRatingTest {
     fun updateMovieRating_movieRatingUpdated() {
         coEvery {repository.getMovieRating(123) } returns  movieRateEntityStub
 
+        val expectedRate = 7.0
         runTest {
             useCase(123, 7.0f)
 
@@ -40,6 +42,7 @@ class UpdateMovieRatingTest {
             val result = repository.getMovieRating(123)
 
             assertNotEquals(movieRateEntityStub.rate, result?.rate)
+            assertEquals(expectedRate, result?.rate)
         }
     }
 }
