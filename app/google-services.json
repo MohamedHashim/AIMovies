@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "191104476081",
+    "project_id": "ai-movies-6f6ce",
+    "storage_bucket": "ai-movies-6f6ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191104476081:android:c4887b5f69e6b14091d390",
+        "android_client_info": {
+          "package_name": "com.example.aimovies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "191104476081-p9tf55rlseig8sohlpqb3tkl1kf99qe5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC24Wbn2p9EUnDP6DMCivQFbCbCVKVXx7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "191104476081-p9tf55rlseig8sohlpqb3tkl1kf99qe5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -107,6 +107,7 @@ fun MovieItemPreview() {
         MovieItem(
             modifier = Modifier,
             movie = MovieModel(
+                movieId = 1,
                 overview = "test",
                 title = "The Tromorrow Warrrrrrr",
                 voteAverage = 8.5,

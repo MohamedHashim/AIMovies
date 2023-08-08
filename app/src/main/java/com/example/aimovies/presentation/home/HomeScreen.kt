@@ -42,7 +42,7 @@ import java.nio.charset.StandardCharsets
  */
 @Composable
 fun HomeScreen(
-    onNavigateToOverview: (String, String, String, String, String) -> Unit
+    onNavigateToOverview: (Long, String, String, String, String, String) -> Unit
 ) {
     val viewModel = koinViewModel<HomeViewModel>()
     LaunchedEffect(key1 = true) {
@@ -53,6 +53,7 @@ fun HomeScreen(
         viewModel.uiState,
         onNavigateToOverview = {
             onNavigateToOverview(
+                it.movieId,
                 it.title,
                 it.overview,
                 it.releaseDate,
@@ -106,7 +107,7 @@ fun HomeScreenUi(
                                 start = if (index == 0) spacing.spaceMedium else spacing.spaceExtraSmall,
                                 end = if (index == uiState.discoverMovieList.size - 1) spacing.spaceMedium else spacing.spaceExtraSmall,
                                 bottom = spacing.spaceMedium,
-                                top = spacing.spaceMedium
+                                top = spacing.spaceSmall
                             ), movie = movie
                         ) {
                             onNavigateToOverview(it)
@@ -137,8 +138,8 @@ fun HomeScreenUi(
                     itemsIndexed(uiState.favouriteMovieList) { index, movie ->
                         MovieHorizontalItem(
                             modifier = Modifier.padding(
-                                top = if (index == 0) spacing.spaceMedium else spacing.spaceExtraSmall,
-                                bottom = if (index == uiState.discoverMovieList.size - 1) spacing.spaceMedium else spacing.spaceExtraSmall,
+                                top = if (index == 0) spacing.spaceSmall else spacing.spaceExtraSmall,
+                                bottom = if (index == uiState.discoverMovieList.size - 1) spacing.spaceSmall else spacing.spaceExtraSmall,
                                 start = spacing.spaceMedium,
                                 end = spacing.spaceMedium
                             ), movie = movie

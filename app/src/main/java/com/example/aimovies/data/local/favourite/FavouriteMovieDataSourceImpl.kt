@@ -1,4 +1,4 @@
-package com.example.aimovies.data.local
+package com.example.aimovies.data.local.favourite
 
 import com.example.aimovies.MovieDatabase
 import com.squareup.sqldelight.runtime.coroutines.asFlow
@@ -22,12 +22,12 @@ class FavouriteMovieDataSourceImpl(
         return queries.getFavouriteMovies().asFlow().mapToList()
     }
 
-    override suspend fun getFavouriteMovie(title: String): FavouriteEntitiy? {
-        return queries.getFavouriteMovie(title).executeAsOneOrNull()
+    override suspend fun getFavouriteMovie(movieId: Long): FavouriteEntitiy? {
+        return queries.getFavouriteMovie(movieId).executeAsOneOrNull()
     }
 
     override suspend fun insertFavouriteMovie(
-        id: Long?,
+        movieId: Long,
         title: String,
         overview: String,
         posterPath: String,
@@ -36,7 +36,8 @@ class FavouriteMovieDataSourceImpl(
     ) {
         withContext(ioDispatcher) {
             queries.insertFavouriteMovie(
-                id = id,
+                id = null,
+                movieId = movieId,
                 title = title,
                 overview = overview,
                 posterPath = posterPath,
@@ -46,9 +47,9 @@ class FavouriteMovieDataSourceImpl(
         }
     }
 
-    override suspend fun deleteFavouriteMovie(id: Long) {
+    override suspend fun deleteFavouriteMovie(movieId: Long) {
         withContext(ioDispatcher) {
-            queries.deleteFavouriteMovie(id)
+            queries.deleteFavouriteMovie(movieId)
         }
     }
 }

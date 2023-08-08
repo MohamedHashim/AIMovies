@@ -1,0 +1,24 @@
+CREATE TABLE movieRateEntity (
+id INTEGER NOT NULL PRIMARY KEY,
+movieId INTEGER NOT NULL,
+rate REAL NOT NULL
+);
+
+getAllMovieRatings:
+SELECT *
+FROM movieRateEntity;
+
+getMovieRating:
+SELECT *
+FROM movieRateEntity
+WHERE movieId = :movieId;
+
+insertMovieRating:
+INSERT OR REPLACE
+INTO movieRateEntity
+VALUES (?, ?, ?);
+
+updateMovieRating:
+UPDATE movieRateEntity
+SET rate = :rate
+WHERE movieId = :movieId;

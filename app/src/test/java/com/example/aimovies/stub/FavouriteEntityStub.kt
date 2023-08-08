@@ -8,6 +8,7 @@ import example.moviedb.FavouriteEntitiy
 
 val favouriteEntityStub = FavouriteEntitiy(
     id = 1,
+    movieId = 123,
     title = "title",
     overview = "overview",
     posterPath = "",

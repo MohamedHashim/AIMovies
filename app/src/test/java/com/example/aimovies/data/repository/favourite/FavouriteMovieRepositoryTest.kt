@@ -1,7 +1,7 @@
 package com.example.aimovies.data.repository.favourite
 
 import com.example.aimovies.MovieDatabase
-import com.example.aimovies.data.local.FavouriteMovieDataSourceImpl
+import com.example.aimovies.data.local.favourite.FavouriteMovieDataSourceImpl
 import com.example.aimovies.stub.favouriteEntityStub
 import com.example.aimovies.stub.movieLocalStub
 import com.squareup.sqldelight.runtime.coroutines.asFlow
@@ -40,6 +40,7 @@ class FavouriteMovieRepositoryTest {
 
         queries.insertFavouriteMovie(
             id = favouriteEntityStub.id,
+            movieId = favouriteEntityStub.movieId,
             title = favouriteEntityStub.title,
             overview = favouriteEntityStub.overview,
             posterPath = favouriteEntityStub.posterPath,
@@ -66,6 +67,7 @@ class FavouriteMovieRepositoryTest {
 
         queries.insertFavouriteMovie(
             id = favouriteEntityStub.id,
+            movieId = favouriteEntityStub.movieId,
             title = favouriteEntityStub.title,
             overview = favouriteEntityStub.overview,
             posterPath = favouriteEntityStub.posterPath,
@@ -74,7 +76,7 @@ class FavouriteMovieRepositoryTest {
         )
 
         runTest {
-            val result = repository.getFavouriteMovie("title")
+            val result = repository.getFavouriteMovie(123)
 
             assertEquals(favouriteEntityStub, result)
         }
@@ -83,7 +85,7 @@ class FavouriteMovieRepositoryTest {
     @Test
     fun getFavouriteMovie_returnNull() {
         runTest {
-            val result = repository.getFavouriteMovie("title")
+            val result = repository.getFavouriteMovie(1)
 
             assertEquals(null, result)
         }

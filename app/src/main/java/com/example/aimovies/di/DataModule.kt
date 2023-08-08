@@ -3,13 +3,17 @@ package com.example.aimovies.di
 import android.util.Log
 import com.example.aimovies.MovieDatabase
 import com.example.aimovies.data.Constants.KtorLogger
-import com.example.aimovies.data.local.FavouriteMovieDataSource
-import com.example.aimovies.data.local.FavouriteMovieDataSourceImpl
+import com.example.aimovies.data.local.favourite.FavouriteMovieDataSource
+import com.example.aimovies.data.local.favourite.FavouriteMovieDataSourceImpl
+import com.example.aimovies.data.local.rating.MovieRatingDataSource
+import com.example.aimovies.data.local.rating.MovieRatingDataSourceImpl
 import com.example.aimovies.data.remote.MovieService
 import com.example.aimovies.data.repository.discover.DiscoverMovieRepository
 import com.example.aimovies.data.repository.discover.DiscoverMovieRepositoryImpl
 import com.example.aimovies.data.repository.favourite.FavouriteMovieRepository
 import com.example.aimovies.data.repository.favourite.FavouriteMovieRepositoryImpl
+import com.example.aimovies.data.repository.rating.MovieRatingRepository
+import com.example.aimovies.data.repository.rating.MovieRatingRepositoryImpl
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import io.ktor.client.HttpClient
@@ -47,8 +51,14 @@ val dataModule = module {
     single<FavouriteMovieDataSource> {
         FavouriteMovieDataSourceImpl(MovieDatabase(get()), Dispatchers.IO)
     }
+    single<MovieRatingDataSource> {
+        MovieRatingDataSourceImpl(MovieDatabase(get()), Dispatchers.IO)
+    }
     single<FavouriteMovieRepository> {
         FavouriteMovieRepositoryImpl(get())
+    }
+    single<MovieRatingRepository> {
+        MovieRatingRepositoryImpl(get())
     }
     single<DiscoverMovieRepository> {
         DiscoverMovieRepositoryImpl(get())

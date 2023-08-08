@@ -1,12 +1,12 @@
 package com.example.aimovies.stub
 
-import com.example.aimovies.data.local.dto.MovieLocal
+import com.example.aimovies.data.local.favourite.dto.MovieLocal
 
 /**
  * Created by A.Elkhami on 27/07/2023.
  */
 val movieLocalStub = MovieLocal(
-    id = 1,
+    movieId = 1,
     title = "title",
     overview = "overview",
     posterPath = "",

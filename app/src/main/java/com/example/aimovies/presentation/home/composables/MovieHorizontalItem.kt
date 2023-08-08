@@ -50,9 +50,6 @@ fun MovieHorizontalItem(
     Row(modifier = modifier
         .fillMaxWidth()
         .height(IntrinsicSize.Max)
-        .padding(
-            spacing.spaceExtraSmall
-        )
         .clip(RoundedCornerShape(spacing.curvedCornerSize))
         .clickable {
             onClick(movie)
@@ -117,6 +114,7 @@ fun MovieHorizontalItemPreview() {
         MovieHorizontalItem(
             modifier = Modifier,
             movie = MovieModel(
+                movieId = 1,
                 overview = "test",
                 title = "The Demon Barber of Fleet Street",
                 voteAverage = 8.5,

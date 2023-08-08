@@ -9,7 +9,7 @@ import example.moviedb.FavouriteEntitiy
 
 fun FavouriteEntitiy.toMovieModel(): MovieModel {
     return MovieModel(
-        id = id,
+        movieId = movieId,
         title = title,
         overview = overview,
         posterPath = posterPath,

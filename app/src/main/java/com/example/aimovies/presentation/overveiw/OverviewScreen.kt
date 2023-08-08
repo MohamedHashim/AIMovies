@@ -28,6 +28,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -49,6 +53,10 @@ import com.example.aimovies.domain.model.MovieModel
 import com.example.aimovies.presentation.home.composables.LoadingAnimation
 import com.example.aimovies.presentation.ui.LocalSpacing
 import com.example.aimovies.presentation.ui.theme.MovieYellow
+import com.example.aimovies.presentation.ui.theme.RateBackground
+import com.gowtham.ratingbar.RatingBar
+import com.gowtham.ratingbar.RatingBarStyle
+import com.gowtham.ratingbar.StepSize
 import org.koin.androidx.compose.koinViewModel
 import java.lang.Float.min
 
@@ -57,6 +65,7 @@ import java.lang.Float.min
  */
 @Composable
 fun OverviewScreen(
+    movieId: Long,
     title: String,
     overview: String,
     releaseDate: String,
@@ -67,6 +76,7 @@ fun OverviewScreen(
     val viewModel = koinViewModel<OverviewViewModel>()
 
     val movie = MovieModel(
+        movieId = movieId,
         title = title,
         overview = overview,
         releaseDate = releaseDate,
@@ -74,46 +84,54 @@ fun OverviewScreen(
         voteAverage = voteAverage.toDouble()
     )
 
-    viewModel.checkIfMovieIsFavourite(title)
+    viewModel.checkIfMovieIsFavourite(movieId)
+    viewModel.getMovieRating(movieId)
 
-    val isFavouriteMovie = viewModel.uiState.isMovieFavourite
-    val movieId = viewModel.uiState.movieId
+    val uiState = viewModel.uiState
 
     OverviewScreenUi(
-        title,
-        overview,
-        releaseDate,
-        posterPath,
-        voteAverage,
-        navController,
-        isFavouriteMovie
-    ) {
-        if (isFavouriteMovie) {
-            movieId?.let {
-                viewModel.deleteFavouriteMovie(it)
+        movieId = movieId,
+        title = title,
+        overview = overview,
+        releaseDate = releaseDate,
+        posterPath = posterPath,
+        voteAverage = voteAverage,
+        uiState = uiState,
+        navController = navController,
+        onAddFavouriteClick = {
+            if (uiState.isMovieFavourite) {
+                viewModel.deleteFavouriteMovie(movieId)
+            } else {
+                viewModel.insertFavouriteMovie(movie)
             }
-        } else {
-            viewModel.insertFavouriteMovie(movie)
+        },
+        onRatingSelected = {
+            viewModel.insertOrUpdateRating(movieId = movieId, rating = it)
         }
-    }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OverviewScreenUi(
+    movieId: Long,
     title: String,
     overview: String,
     releaseDate: String,
     posterPath: String,
     voteAverage: String,
+    uiState: OverviewUIModel,
     navController: NavHostController?,
-    isMovieFavourite: Boolean,
-    onAddFavouriteClick: (MovieModel) -> Unit
+    onAddFavouriteClick: (MovieModel) -> Unit,
+    onRatingSelected: (Float) -> Unit
 ) {
     val spacing = LocalSpacing.current
     val painter = rememberAsyncImagePainter(posterPath)
     val state = painter.state
     val scrollState = rememberScrollState()
+    var movieRating by remember {
+        mutableStateOf(uiState.rating)
+    }
 
     Scaffold(
         modifier = Modifier
@@ -125,6 +143,7 @@ fun OverviewScreenUi(
                 onClick = {
                     onAddFavouriteClick(
                         MovieModel(
+                            movieId = movieId,
                             title = title,
                             overview = overview,
                             releaseDate = releaseDate,
@@ -137,7 +156,7 @@ fun OverviewScreenUi(
                 Icon(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = null,
-                    tint = if (isMovieFavourite) MovieYellow else Color.White,
+                    tint = if (uiState.isMovieFavourite) MovieYellow else Color.White,
                     modifier = Modifier.padding(spacing.spaceMedium)
                 )
             }
@@ -173,7 +192,7 @@ fun OverviewScreenUi(
                         AsyncImage(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(spacing.overviewImageSize)
+                                .height(spacing.overviewImageBackgroundSize)
                                 .clip(
                                     RoundedCornerShape(
                                         bottomStart = spacing.spaceLarge,
@@ -189,21 +208,42 @@ fun OverviewScreenUi(
                             error = painterResource(id = R.drawable.movie_placeholder),
                             contentDescription = null
                         )
-                        AsyncImage(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(spacing.overviewImageSize)
-                                .clip(
-                                    RoundedCornerShape(spacing.spaceExtraLarge)
-                                ),
-                            contentScale = ContentScale.Fit,
-                            model = posterPath,
-                            onLoading = {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(spacing.overviewImageSize)
+                                    .clip(
+                                        RoundedCornerShape(spacing.spaceExtraLarge)
+                                    ),
+                                contentScale = ContentScale.Fit,
+                                model = posterPath,
+                                onLoading = {
 
-                            },
-                            error = painterResource(id = R.drawable.movie_placeholder),
-                            contentDescription = null
-                        )
+                                },
+                                error = painterResource(id = R.drawable.movie_placeholder),
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.height(spacing.spaceMedium))
+                            RatingBar(
+                                value = movieRating,
+                                style = RatingBarStyle.Fill(MovieYellow),
+                                stepSize = StepSize.HALF,
+                                onValueChange = {
+                                    movieRating = it
+                                },
+                                onRatingChanged = {
+                                    onRatingSelected(it)
+                                },
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(spacing.spaceMedium))
+                                    .background(RateBackground)
+                                    .padding(spacing.spaceMedium)
+                            )
+                        }
                     }
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -220,29 +260,35 @@ fun OverviewScreenUi(
                             fontSize = 28.sp,
                             textAlign = TextAlign.Center
                         )
-                        Text(
-                            text = releaseDate,
-                            color = Color.Gray,
-                            modifier = Modifier.padding(top = spacing.spaceSmall),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
                         Row(
-                            modifier = Modifier
-                                .padding(top = spacing.spaceSmall),
-                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                Icons.Default.Star,
-                                modifier = Modifier.size(spacing.ratingIconSize),
-                                tint = MovieYellow,
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(spacing.spaceSmall))
+                            Row(
+                                modifier = Modifier
+                                    .padding(top = spacing.spaceSmall),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    Icons.Default.Star,
+                                    modifier = Modifier.size(spacing.ratingIconSize),
+                                    tint = MovieYellow,
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(spacing.spaceSmall))
+                                Text(
+                                    text = voteAverage,
+                                    color = Color.Gray,
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(spacing.spaceMedium))
                             Text(
-                                text = voteAverage,
+                                text = releaseDate,
                                 color = Color.Gray,
+                                modifier = Modifier.padding(top = spacing.spaceSmall),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                         Text(
@@ -281,14 +327,15 @@ fun OverviewScreenUi(
 @Composable
 fun OverviewScreenPreview() {
     OverviewScreenUi(
+        movieId = 1,
         title = "The Demon Barber of Fleet Street",
         overview = "Former cinema superhero Riggan Thomson (Michael Keaton) is mounting an ambitious Broadway production that he hopes will breathe new life into his stagnant career. It's risky, but he hopes that his creative gamble will prove that he's a real artist and not just a washed-up movie star. As opening night approaches, a castmate is injured, forcing Riggan to hire an actor (Edward Norton) who is guaranteed to shake things up. Meanwhile, Riggan must deal with his girlfriend, daughter and ex-wife.",
-        releaseDate = "01/03/2023",
+        releaseDate = "2023",
         posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%20maverick-min.png",
         voteAverage = "8.5",
         navController = null,
-        false
-    ) {
-
-    }
+        uiState = OverviewUIModel(),
+        onAddFavouriteClick = {},
+        onRatingSelected = {}
+    )
 }

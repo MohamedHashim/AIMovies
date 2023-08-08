@@ -7,7 +7,7 @@ import example.moviedb.FavouriteEntitiy
  * Created by A.Elkhami on 26/07/2023.
  */
 class GetFavouriteMovie(private val repository: FavouriteMovieRepository) {
-    suspend operator fun invoke(title: String): FavouriteEntitiy? {
-        return repository.getFavouriteMovie(title)
+    suspend operator fun invoke(movieId: Long): FavouriteEntitiy? {
+        return repository.getFavouriteMovie(movieId)
     }
 }
