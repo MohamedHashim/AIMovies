@@ -27,6 +27,9 @@ android {
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
         buildConfigField "String", "AUTH_KEY", "\"${properties.getProperty("AUTH_KEY")}\""
+        packagingOptions {
+            resources.excludes.add("META-INF/*")
+        }
     }
 
     buildTypes {
@@ -88,6 +91,8 @@ dependencies {
     implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
 
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+    implementation "com.google.cloud:google-cloud-bigquery:2.0.0"
+    implementation 'com.google.code.gson:gson:2.9.0'
 
     //Koin
     def koin_version = '3.4.1'
