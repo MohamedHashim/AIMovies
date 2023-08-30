@@ -1,4 +1,4 @@
-package com.example.aimovies.presentation.home
+package com.example.aimovies.presentation.home.model
 
 import com.example.aimovies.domain.model.MovieModel
 

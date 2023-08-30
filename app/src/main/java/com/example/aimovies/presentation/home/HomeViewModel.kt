@@ -14,6 +14,8 @@ import com.example.aimovies.domain.use_case.GetDiscoverMovie
 import com.example.aimovies.domain.use_case.GetFavouriteMovies
 import com.example.aimovies.domain.use_case.GetMovieDetailsById
 import com.example.aimovies.presentation.home.mapper.toMovieModel
+import com.example.aimovies.presentation.home.model.DiscoverMoviesUiModel
+import com.example.aimovies.presentation.home.model.MovieDetailsUiModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -30,6 +32,8 @@ class HomeViewModel(
 
     var movieDetailsUiState by mutableStateOf(MovieDetailsUiModel())
         private set
+
+    var selectedTab = mutableStateOf("Favorites")
 
     private val recommendedMoviesList = mutableListOf<MovieModel>()
 

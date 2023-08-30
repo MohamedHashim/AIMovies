@@ -17,11 +17,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -37,6 +36,8 @@ import com.example.aimovies.presentation.home.composables.MovieHorizontalItem
 import com.example.aimovies.presentation.home.composables.MovieItem
 import com.example.aimovies.presentation.home.composables.ToggleButton
 import com.example.aimovies.presentation.home.composables.rememberForeverLazyListState
+import com.example.aimovies.presentation.home.model.DiscoverMoviesUiModel
+import com.example.aimovies.presentation.home.model.MovieDetailsUiModel
 import com.example.aimovies.presentation.ui.LocalSpacing
 import com.example.aimovies.presentation.ui.theme.AIMoviesTheme
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +61,7 @@ fun HomeScreen(
     HomeScreenUi(
         viewModel.discoverMoviesUiState,
         viewModel.movieDetailsUiState,
+        viewModel.selectedTab,
         onNavigateToOverview = {
             onNavigateToOverview(
                 it.movieId,
@@ -81,6 +83,7 @@ fun HomeScreen(
 fun HomeScreenUi(
     discoverMoviesUiState: DiscoverMoviesUiModel,
     movieDetailsUiState: MovieDetailsUiModel,
+    selectedTab: MutableState<String>,
     onRefresh: () -> Unit,
     onNavigateToOverview: (MovieModel) -> Unit,
     onRecommendedResponseReceived: (List<TopRecommendationsResponseItem>) -> Unit
@@ -89,11 +92,6 @@ fun HomeScreenUi(
     val context = LocalContext.current
 
     val coroutineScope = rememberCoroutineScope()
-
-
-    var selectedTab by remember {
-        mutableStateOf("Favorites")
-    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
@@ -139,11 +137,11 @@ fun HomeScreenUi(
                     .padding(horizontal = spacing.spaceMedium),
                 buttons = listOf("Favorites", "Recommended"),
                 width = spacing.toggleButtonWidth,
-                currentSelection = selectedTab
+                currentSelection = selectedTab.value
             ) {
-                selectedTab = it
+                selectedTab.value = it
             }
-            if (selectedTab == "Favorites") {
+            if (selectedTab.value == "Favorites") {
                 if (discoverMoviesUiState.favouriteMovieList.isEmpty()) {
                     EmptyListView(Icons.Default.Favorite, "No favourite movies yet.")
                 }
@@ -211,9 +209,13 @@ fun HomeScreenUi(
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
     AIMoviesTheme {
+        val selectedTab = remember {
+            mutableStateOf("")
+        }
         HomeScreenUi(
             DiscoverMoviesUiModel(DiscoverMoviesUiModel().discoverMovieList),
             MovieDetailsUiModel(),
+            selectedTab,
             {},
             {},
             {})
