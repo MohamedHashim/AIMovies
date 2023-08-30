@@ -17,6 +17,7 @@ import com.example.aimovies.presentation.home.mapper.toMovieModel
 import com.example.aimovies.presentation.home.model.DiscoverMoviesUiModel
 import com.example.aimovies.presentation.home.model.MovieDetailsUiModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 
 /**
@@ -38,6 +39,13 @@ class HomeViewModel(
     private val recommendedMoviesList = mutableListOf<MovieModel>()
 
     fun getDiscoverMovie(page: Int) {
+        recommendedMoviesList.clear()
+
+        movieDetailsUiState = movieDetailsUiState.copy(
+            recommendedMovieList = recommendedMoviesList,
+            isLoading = true
+        )
+
         viewModelScope.launch {
             when (val response = getDiscoverMovieUseCase(page)) {
                 is Result.Error -> {
@@ -57,7 +65,9 @@ class HomeViewModel(
                         )
                     }
                     data = data.copy(results = results)
+
                     val movieList = data.results.map { it.toMovieModel() }
+
                     discoverMoviesUiState = discoverMoviesUiState.copy(
                         discoverMovieList = movieList,
                         isLoading = false,
@@ -70,9 +80,13 @@ class HomeViewModel(
 
     fun getRecommendedMoviesById(recommendationsList: List<TopRecommendation>) {
         viewModelScope.launch {
-            val response = getMovieByIdUseCase(recommendationsList)
+            /* *
+             * toList() function is used to wait for all emitted results
+             * to come in order to process them for the UI.
+             */
+            val response = getMovieByIdUseCase(recommendationsList).toList()
 
-            response.collect { result ->
+            response.forEach { result ->
                 when (result) {
                     is Result.Error -> {
                         movieDetailsUiState = movieDetailsUiState.copy(
@@ -90,6 +104,7 @@ class HomeViewModel(
                         )
 
                         recommendedMoviesList.add(movie.toMovieModel())
+
                         movieDetailsUiState = movieDetailsUiState.copy(
                             recommendedMovieList = recommendedMoviesList,
                             isLoading = false,

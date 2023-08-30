@@ -7,10 +7,10 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class MovieModel(
-    val movieId: Long,
-    val overview: String,
-    val posterPath: String,
-    val releaseDate: String,
-    val title: String,
-    val voteAverage: Double
+    val movieId: Long? = null,
+    val overview: String = "",
+    val posterPath: String = "",
+    val releaseDate: String = "",
+    val title: String = "",
+    val voteAverage: Double? = null
 )

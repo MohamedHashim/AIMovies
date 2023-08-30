@@ -17,7 +17,7 @@ fun Movie.toMovieModel() = MovieModel(
 )
 
 fun MovieModel.toMovieLocalDto() = MovieLocal(
-    movieId = movieId,
+    movieId = movieId ?: 0,
     title = title,
     overview = overview,
     releaseDate = releaseDate,

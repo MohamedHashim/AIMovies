@@ -17,7 +17,7 @@ class MovieDetailsRepositoryImpl(private val api: MovieServiceImpl) : MovieDetai
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getMovieById(recommendationsList: List<TopRecommendation>)
             : Flow<Result<MovieDetailsResponse>> {
-        return recommendationsList.asFlow().flatMapMerge(concurrency = 2) { topRecommendation ->
+        return recommendationsList.asFlow().flatMapMerge(concurrency = 10) { topRecommendation ->
             flow {
                 emit(api.getMovieById(topRecommendation.tmdbId))
             }

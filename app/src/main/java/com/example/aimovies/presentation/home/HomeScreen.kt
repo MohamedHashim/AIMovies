@@ -1,6 +1,5 @@
 package com.example.aimovies.presentation.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -27,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.aimovies.big_query.Recommendations
-import com.example.aimovies.big_query.dto.TopRecommendationsResponseItem
 import com.example.aimovies.big_query.mapper.jsonToRecommendedMovie
 import com.example.aimovies.domain.model.MovieModel
 import com.example.aimovies.presentation.home.composables.EmptyListView
@@ -43,40 +40,44 @@ import com.example.aimovies.presentation.ui.theme.AIMoviesTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 /**
  * Created by A.Elkhami on 18/07/2023.
  */
 @Composable
 fun HomeScreen(
-    onNavigateToOverview: (Long, String, String, String, String, String) -> Unit
+    onNavigateToOverview: (MovieModel) -> Unit
 ) {
     val viewModel = koinViewModel<HomeViewModel>()
+
+    val context = LocalContext.current
+
+    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(key1 = true) {
         viewModel.getDiscoverMovie(1)
         viewModel.getFavouriteMovies()
+
+        coroutineScope.launch(Dispatchers.IO) {
+            val recommendedMoviesBigQuery =
+                Recommendations().getRecommendations(context.resources, "5306")
+
+            recommendedMoviesBigQuery?.let { recommendationResponse ->
+                val recommendedList = jsonToRecommendedMovie(recommendationResponse)
+
+                val response = recommendedList[0]
+                viewModel.getRecommendedMoviesById(response.topRecommendations)
+            }
+        }
     }
-    HomeScreenUi(
-        viewModel.discoverMoviesUiState,
+    HomeScreenUi(viewModel.discoverMoviesUiState,
         viewModel.movieDetailsUiState,
         viewModel.selectedTab,
         onNavigateToOverview = {
-            onNavigateToOverview(
-                it.movieId,
-                it.title,
-                it.overview,
-                it.releaseDate,
-                URLEncoder.encode(it.posterPath, StandardCharsets.UTF_8.toString()),
-                it.voteAverage.toString()
-            )
+            onNavigateToOverview(it)
         },
-        onRefresh = { viewModel.getDiscoverMovie(1) },
-        onRecommendedResponseReceived = { recommendedResponse ->
-            val response = recommendedResponse[0]
-            viewModel.getRecommendedMoviesById(response.topRecommendations)
-        })
+        onRefresh = { viewModel.getDiscoverMovie(1) }
+    )
 }
 
 @Composable
@@ -85,13 +86,9 @@ fun HomeScreenUi(
     movieDetailsUiState: MovieDetailsUiModel,
     selectedTab: MutableState<String>,
     onRefresh: () -> Unit,
-    onNavigateToOverview: (MovieModel) -> Unit,
-    onRecommendedResponseReceived: (List<TopRecommendationsResponseItem>) -> Unit
+    onNavigateToOverview: (MovieModel) -> Unit
 ) {
     val spacing = LocalSpacing.current
-    val context = LocalContext.current
-
-    val coroutineScope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
@@ -115,8 +112,7 @@ fun HomeScreenUi(
                     CircularProgressIndicator(modifier = Modifier.padding(spacing.spaceMedium))
                 }
                 LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     itemsIndexed(discoverMoviesUiState.discoverMovieList) { index, movie ->
                         MovieItem(
@@ -133,8 +129,7 @@ fun HomeScreenUi(
                 }
             }
             ToggleButton(
-                modifier = Modifier
-                    .padding(horizontal = spacing.spaceMedium),
+                modifier = Modifier.padding(horizontal = spacing.spaceMedium),
                 buttons = listOf("Favorites", "Recommended"),
                 width = spacing.toggleButtonWidth,
                 currentSelection = selectedTab.value
@@ -166,34 +161,27 @@ fun HomeScreenUi(
                     }
                 }
             } else {
-                LaunchedEffect(key1 = true) {
-                    coroutineScope.launch(Dispatchers.IO) {
-                        val recommendedMoviesBigQuery =
-                            Recommendations().getRecommendations(context.resources, "5306")
-
-                        recommendedMoviesBigQuery?.let { recommendationResponse ->
-                            val recommendedList = jsonToRecommendedMovie(recommendationResponse)
-
-                            onRecommendedResponseReceived(recommendedList)
-
-                            Log.i("taiga", recommendationResponse)
-                        }
-                    }
-                }
-
                 if (movieDetailsUiState.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.padding(spacing.spaceMedium))
-                }else {
+                } else {
                     if (movieDetailsUiState.recommendedMovieList.isEmpty()) {
                         EmptyListView(Icons.Default.ThumbUp, "No recommendations available yet")
                     } else {
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(spacing.spaceMedium)
+                                .padding(top = spacing.spaceExtraSmall),
+                            state = rememberForeverLazyListState(key = "Overview")
                         ) {
-                            items(movieDetailsUiState.recommendedMovieList) { movie ->
-                                MovieHorizontalItem(modifier = Modifier, movie = movie) {
+                            itemsIndexed(movieDetailsUiState.recommendedMovieList) { index, movie ->
+                                MovieHorizontalItem(
+                                    modifier = Modifier.padding(
+                                        top = if (index == 0) spacing.spaceSmall else spacing.spaceExtraSmall,
+                                        bottom = if (index == discoverMoviesUiState.discoverMovieList.size - 1) spacing.spaceSmall else spacing.spaceExtraSmall,
+                                        start = spacing.spaceMedium,
+                                        end = spacing.spaceMedium
+                                    ), movie = movie
+                                ) {
                                     onNavigateToOverview(it)
                                 }
                             }
@@ -212,11 +200,9 @@ fun HomeScreenPreview() {
         val selectedTab = remember {
             mutableStateOf("")
         }
-        HomeScreenUi(
-            DiscoverMoviesUiModel(DiscoverMoviesUiModel().discoverMovieList),
+        HomeScreenUi(DiscoverMoviesUiModel(DiscoverMoviesUiModel().discoverMovieList),
             MovieDetailsUiModel(),
             selectedTab,
-            {},
             {},
             {})
     }
