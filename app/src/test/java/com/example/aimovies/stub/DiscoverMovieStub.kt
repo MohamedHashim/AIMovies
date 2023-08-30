@@ -1,7 +1,7 @@
 package com.example.aimovies.stub
 
-import com.example.aimovies.data.remote.dto.DiscoverMovieResponse
-import com.example.aimovies.data.remote.dto.Movie
+import com.example.aimovies.data.remote.dto.discover.DiscoverMovieResponse
+import com.example.aimovies.data.remote.dto.discover.Movie
 import com.example.aimovies.domain.model.MovieModel
 
 /**

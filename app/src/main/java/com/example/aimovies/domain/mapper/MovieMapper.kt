@@ -1,7 +1,7 @@
 package com.example.aimovies.domain.mapper
 
 import com.example.aimovies.data.local.favourite.dto.MovieLocal
-import com.example.aimovies.data.remote.dto.Movie
+import com.example.aimovies.data.remote.dto.discover.Movie
 import com.example.aimovies.domain.model.MovieModel
 
 /**

@@ -1,5 +1,6 @@
 package com.example.aimovies.presentation.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,11 +20,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.aimovies.big_query.Recommendations
+import com.example.aimovies.big_query.dto.TopRecommendationsResponseItem
+import com.example.aimovies.big_query.mapper.jsonToRecommendedMovie
 import com.example.aimovies.domain.model.MovieModel
 import com.example.aimovies.presentation.home.composables.EmptyListView
 import com.example.aimovies.presentation.home.composables.ErrorView
@@ -33,6 +39,8 @@ import com.example.aimovies.presentation.home.composables.ToggleButton
 import com.example.aimovies.presentation.home.composables.rememberForeverLazyListState
 import com.example.aimovies.presentation.ui.LocalSpacing
 import com.example.aimovies.presentation.ui.theme.AIMoviesTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -50,7 +58,8 @@ fun HomeScreen(
         viewModel.getFavouriteMovies()
     }
     HomeScreenUi(
-        viewModel.uiState,
+        viewModel.discoverMoviesUiState,
+        viewModel.movieDetailsUiState,
         onNavigateToOverview = {
             onNavigateToOverview(
                 it.movieId,
@@ -61,16 +70,26 @@ fun HomeScreen(
                 it.voteAverage.toString()
             )
         },
-        onRefresh = { viewModel.getDiscoverMovie(1) })
+        onRefresh = { viewModel.getDiscoverMovie(1) },
+        onRecommendedResponseReceived = { recommendedResponse ->
+            val response = recommendedResponse[0]
+            viewModel.getRecommendedMoviesById(response.topRecommendations)
+        })
 }
 
 @Composable
 fun HomeScreenUi(
-    uiState: HomeUiModel,
+    discoverMoviesUiState: DiscoverMoviesUiModel,
+    movieDetailsUiState: MovieDetailsUiModel,
     onRefresh: () -> Unit,
-    onNavigateToOverview: (MovieModel) -> Unit
+    onNavigateToOverview: (MovieModel) -> Unit,
+    onRecommendedResponseReceived: (List<TopRecommendationsResponseItem>) -> Unit
 ) {
     val spacing = LocalSpacing.current
+    val context = LocalContext.current
+
+    val coroutineScope = rememberCoroutineScope()
+
 
     var selectedTab by remember {
         mutableStateOf("Favorites")
@@ -87,25 +106,25 @@ fun HomeScreenUi(
                 top = spacing.mainTitleVerticalPadding
             )
         )
-        if (uiState.errorMessage != "") {
-            ErrorView(uiState.errorMessage) {
+        if (discoverMoviesUiState.errorMessage != "") {
+            ErrorView(discoverMoviesUiState.errorMessage) {
                 onRefresh()
             }
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(contentAlignment = Alignment.Center) {
-                if (uiState.isLoading) {
+                if (discoverMoviesUiState.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.padding(spacing.spaceMedium))
                 }
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    itemsIndexed(uiState.discoverMovieList) { index, movie ->
+                    itemsIndexed(discoverMoviesUiState.discoverMovieList) { index, movie ->
                         MovieItem(
                             modifier = Modifier.padding(
                                 start = if (index == 0) spacing.spaceMedium else spacing.spaceExtraSmall,
-                                end = if (index == uiState.discoverMovieList.size - 1) spacing.spaceMedium else spacing.spaceExtraSmall,
+                                end = if (index == discoverMoviesUiState.discoverMovieList.size - 1) spacing.spaceMedium else spacing.spaceExtraSmall,
                                 bottom = spacing.spaceMedium,
                                 top = spacing.spaceSmall
                             ), movie = movie
@@ -125,7 +144,7 @@ fun HomeScreenUi(
                 selectedTab = it
             }
             if (selectedTab == "Favorites") {
-                if (uiState.favouriteMovieList.isEmpty()) {
+                if (discoverMoviesUiState.favouriteMovieList.isEmpty()) {
                     EmptyListView(Icons.Default.Favorite, "No favourite movies yet.")
                 }
 
@@ -135,11 +154,11 @@ fun HomeScreenUi(
                         .padding(top = spacing.spaceExtraSmall),
                     state = rememberForeverLazyListState(key = "Overview")
                 ) {
-                    itemsIndexed(uiState.favouriteMovieList) { index, movie ->
+                    itemsIndexed(discoverMoviesUiState.favouriteMovieList) { index, movie ->
                         MovieHorizontalItem(
                             modifier = Modifier.padding(
                                 top = if (index == 0) spacing.spaceSmall else spacing.spaceExtraSmall,
-                                bottom = if (index == uiState.discoverMovieList.size - 1) spacing.spaceSmall else spacing.spaceExtraSmall,
+                                bottom = if (index == discoverMoviesUiState.discoverMovieList.size - 1) spacing.spaceSmall else spacing.spaceExtraSmall,
                                 start = spacing.spaceMedium,
                                 end = spacing.spaceMedium
                             ), movie = movie
@@ -149,16 +168,37 @@ fun HomeScreenUi(
                     }
                 }
             } else {
-                EmptyListView(Icons.Default.ThumbUp, "No recommendations available yet")
+                LaunchedEffect(key1 = true) {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        val recommendedMoviesBigQuery =
+                            Recommendations().getRecommendations(context.resources, "5306")
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(spacing.spaceMedium)
-                ) {
-                    items(emptyList<MovieModel>()) { movie ->
-                        MovieHorizontalItem(modifier = Modifier, movie = movie) {
+                        recommendedMoviesBigQuery?.let { recommendationResponse ->
+                            val recommendedList = jsonToRecommendedMovie(recommendationResponse)
 
+                            onRecommendedResponseReceived(recommendedList)
+
+                            Log.i("taiga", recommendationResponse)
+                        }
+                    }
+                }
+
+                if (movieDetailsUiState.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.padding(spacing.spaceMedium))
+                }else {
+                    if (movieDetailsUiState.recommendedMovieList.isEmpty()) {
+                        EmptyListView(Icons.Default.ThumbUp, "No recommendations available yet")
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(spacing.spaceMedium)
+                        ) {
+                            items(movieDetailsUiState.recommendedMovieList) { movie ->
+                                MovieHorizontalItem(modifier = Modifier, movie = movie) {
+                                    onNavigateToOverview(it)
+                                }
+                            }
                         }
                     }
                 }
@@ -171,6 +211,11 @@ fun HomeScreenUi(
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
     AIMoviesTheme {
-        HomeScreenUi(HomeUiModel(HomeUiModel().discoverMovieList), {}, {})
+        HomeScreenUi(
+            DiscoverMoviesUiModel(DiscoverMoviesUiModel().discoverMovieList),
+            MovieDetailsUiModel(),
+            {},
+            {},
+            {})
     }
 }
