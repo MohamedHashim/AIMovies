@@ -1,6 +1,6 @@
 package com.example.aimovies.data.repository.discover
 
-import com.example.aimovies.data.remote.MovieServiceImpl
+import com.example.aimovies.data.remote.MovieService
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.data.remote.dto.discover.DiscoverMovieResponse
 import com.example.aimovies.stub.discoverMovieResponseStub
@@ -16,7 +16,7 @@ import org.junit.Test
  */
 class DiscoverMovieRepositoryImplTest {
 
-    private lateinit var api: MovieServiceImpl
+    private lateinit var api: MovieService
     private lateinit var repository: DiscoverMovieRepositoryImpl
 
     @Before

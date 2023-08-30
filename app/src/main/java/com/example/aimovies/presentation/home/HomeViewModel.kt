@@ -39,13 +39,6 @@ class HomeViewModel(
     private val recommendedMoviesList = mutableListOf<MovieModel>()
 
     fun getDiscoverMovie(page: Int) {
-        recommendedMoviesList.clear()
-
-        movieDetailsUiState = movieDetailsUiState.copy(
-            recommendedMovieList = recommendedMoviesList,
-            isLoading = true
-        )
-
         viewModelScope.launch {
             when (val response = getDiscoverMovieUseCase(page)) {
                 is Result.Error -> {
@@ -79,6 +72,14 @@ class HomeViewModel(
     }
 
     fun getRecommendedMoviesById(recommendationsList: List<TopRecommendation>) {
+
+        recommendedMoviesList.clear()
+
+        movieDetailsUiState = movieDetailsUiState.copy(
+            recommendedMovieList = recommendedMoviesList,
+            isLoading = true
+        )
+
         viewModelScope.launch {
             /* *
              * toList() function is used to wait for all emitted results

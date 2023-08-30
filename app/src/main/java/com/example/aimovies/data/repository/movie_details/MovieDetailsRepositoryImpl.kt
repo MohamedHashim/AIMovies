@@ -1,7 +1,7 @@
 package com.example.aimovies.data.repository.movie_details
 
 import com.example.aimovies.big_query.dto.TopRecommendation
-import com.example.aimovies.data.remote.MovieServiceImpl
+import com.example.aimovies.data.remote.MovieService
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.data.remote.dto.movie_details.MovieDetailsResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flow
 /**
  * Created by A.Elkhami on 29/08/2023.
  */
-class MovieDetailsRepositoryImpl(private val api: MovieServiceImpl) : MovieDetailsRepository {
+class MovieDetailsRepositoryImpl(private val api: MovieService) : MovieDetailsRepository {
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getMovieById(recommendationsList: List<TopRecommendation>)
             : Flow<Result<MovieDetailsResponse>> {
