@@ -6,7 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aimovies.BuildConfig
+import com.example.aimovies.domain.use_case.GetRecommendations
 import com.example.aimovies.big_query.dto.TopRecommendation
+import com.example.aimovies.big_query.mapper.jsonToRecommendedMovie
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.domain.mapper.toMovieModel
 import com.example.aimovies.domain.model.MovieModel
@@ -16,6 +18,7 @@ import com.example.aimovies.domain.use_case.GetMovieDetailsById
 import com.example.aimovies.presentation.home.mapper.toMovieModel
 import com.example.aimovies.presentation.home.model.DiscoverMoviesUiModel
 import com.example.aimovies.presentation.home.model.MovieDetailsUiModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -26,7 +29,8 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val getDiscoverMovieUseCase: GetDiscoverMovie,
     private val getMovieByIdUseCase: GetMovieDetailsById,
-    private val getFavouriteMoviesUseCase: GetFavouriteMovies
+    private val getFavouriteMoviesUseCase: GetFavouriteMovies,
+    private val getRecommendations: GetRecommendations
 ) : ViewModel() {
     var discoverMoviesUiState by mutableStateOf(DiscoverMoviesUiModel())
         private set
@@ -125,6 +129,20 @@ class HomeViewModel(
                         favouriteEntity.toMovieModel()
                     }
                 )
+            }
+        }
+    }
+
+    fun getDataFromBigQuery() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val recommendedMoviesBigQuery =
+                getRecommendations("5306")
+
+            recommendedMoviesBigQuery?.let { recommendationResponse ->
+                val recommendedList = jsonToRecommendedMovie(recommendationResponse)
+
+                val response = recommendedList[0]
+                getRecommendedMoviesById(response.topRecommendations)
             }
         }
     }

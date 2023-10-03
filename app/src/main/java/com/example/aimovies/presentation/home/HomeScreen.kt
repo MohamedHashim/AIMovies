@@ -18,14 +18,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.aimovies.big_query.Recommendations
-import com.example.aimovies.big_query.mapper.jsonToRecommendedMovie
 import com.example.aimovies.domain.model.MovieModel
 import com.example.aimovies.presentation.home.composables.EmptyListView
 import com.example.aimovies.presentation.home.composables.ErrorView
@@ -37,8 +33,6 @@ import com.example.aimovies.presentation.home.model.DiscoverMoviesUiModel
 import com.example.aimovies.presentation.home.model.MovieDetailsUiModel
 import com.example.aimovies.presentation.ui.LocalSpacing
 import com.example.aimovies.presentation.ui.theme.AIMoviesTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 /**
@@ -50,25 +44,10 @@ fun HomeScreen(
 ) {
     val viewModel = koinViewModel<HomeViewModel>()
 
-    val context = LocalContext.current
-
-    val coroutineScope = rememberCoroutineScope()
-
     LaunchedEffect(key1 = true) {
         viewModel.getDiscoverMovie(1)
         viewModel.getFavouriteMovies()
-
-        coroutineScope.launch(Dispatchers.IO) {
-            val recommendedMoviesBigQuery =
-                Recommendations().getRecommendations(context.resources, "5306")
-
-            recommendedMoviesBigQuery?.let { recommendationResponse ->
-                val recommendedList = jsonToRecommendedMovie(recommendationResponse)
-
-                val response = recommendedList[0]
-                viewModel.getRecommendedMoviesById(response.topRecommendations)
-            }
-        }
+        viewModel.getDataFromBigQuery()
     }
     HomeScreenUi(viewModel.discoverMoviesUiState,
         viewModel.movieDetailsUiState,

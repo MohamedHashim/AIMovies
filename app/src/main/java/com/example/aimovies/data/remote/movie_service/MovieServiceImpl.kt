@@ -1,6 +1,7 @@
-package com.example.aimovies.data.remote
+package com.example.aimovies.data.remote.movie_service
 
 import com.example.aimovies.BuildConfig
+import com.example.aimovies.data.remote.HttpRoutes
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.data.remote.api_handler.handleApi
 import com.example.aimovies.data.remote.dto.discover.DiscoverMovieResponse

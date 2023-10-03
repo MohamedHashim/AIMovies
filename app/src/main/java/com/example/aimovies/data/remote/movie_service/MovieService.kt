@@ -1,4 +1,4 @@
-package com.example.aimovies.data.remote
+package com.example.aimovies.data.remote.movie_service
 
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.data.remote.dto.discover.DiscoverMovieResponse

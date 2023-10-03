@@ -8,4 +8,5 @@ import com.example.aimovies.BuildConfig
 object HttpRoutes {
     const val DISCOVER_MOVIES = "${BuildConfig.BASE_URL}/3/discover/movie?language=en&sort_by=popularity.desc"
     const val MOVIE_DETAILS = "${BuildConfig.BASE_URL}/3/movie/"
+    const val GOOGLE_CRED = BuildConfig.GITHUB_GOOGLE_CERT_URL
 }
