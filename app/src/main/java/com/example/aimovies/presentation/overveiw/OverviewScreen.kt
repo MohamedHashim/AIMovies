@@ -44,7 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
@@ -65,51 +64,32 @@ import java.lang.Float.min
  */
 @Composable
 fun OverviewScreen(
-    movieId: Long,
-    title: String,
-    overview: String,
-    releaseDate: String,
-    posterPath: String,
-    voteAverage: String,
-    navController: NavHostController
+    movieModel: MovieModel,
+    onBackPress: () -> Unit
 ) {
     val viewModel = koinViewModel<OverviewViewModel>()
 
-    val movie = MovieModel(
-        movieId = movieId,
-        title = title,
-        overview = overview,
-        releaseDate = releaseDate,
-        posterPath = posterPath,
-        voteAverage = voteAverage.toDouble()
-    )
-
-    viewModel.checkIfMovieIsFavourite(movieId)
-    viewModel.getMovieRating(movieId)
+    viewModel.checkIfMovieIsFavourite(movieModel.movieId ?: 0)
+    viewModel.getMovieRating(movieModel.movieId ?: 0)
 
     val uiState = viewModel.uiState
 
     OverviewScreenUi(
-        movieId = movieId,
-        title = title,
-        overview = overview,
-        releaseDate = releaseDate,
-        posterPath = posterPath,
-        voteAverage = voteAverage,
+        movieModel = movieModel,
         uiState = uiState,
-        navController = navController,
+        onBackPress = onBackPress,
         onAddFavouriteClick = {
             if (uiState.isMovieFavourite) {
-                viewModel.deleteFavouriteMovie(movieId)
+                viewModel.deleteFavouriteMovie(movieModel.movieId ?: 0)
             } else {
-                viewModel.insertFavouriteMovie(movie)
+                viewModel.insertFavouriteMovie(movieModel)
             }
         },
         onRatingSelected = {
             viewModel.insertOrUpdateRating(
-                movieId = movieId,
+                movieId = movieModel.movieId ?: 0,
                 rating = it,
-                title = title,
+                title = movieModel.title,
                 userId = 1
             )
         }
@@ -119,19 +99,14 @@ fun OverviewScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OverviewScreenUi(
-    movieId: Long,
-    title: String,
-    overview: String,
-    releaseDate: String,
-    posterPath: String,
-    voteAverage: String,
+    movieModel: MovieModel,
     uiState: OverviewUIModel,
-    navController: NavHostController?,
+    onBackPress: () -> Unit,
     onAddFavouriteClick: (MovieModel) -> Unit,
     onRatingSelected: (Float) -> Unit
 ) {
     val spacing = LocalSpacing.current
-    val painter = rememberAsyncImagePainter(posterPath)
+    val painter = rememberAsyncImagePainter(movieModel.posterPath)
     val state = painter.state
     val scrollState = rememberScrollState()
     var movieRating by remember {
@@ -147,14 +122,7 @@ fun OverviewScreenUi(
                 shape = RoundedCornerShape(spacing.curvedCornerSize),
                 onClick = {
                     onAddFavouriteClick(
-                        MovieModel(
-                            movieId = movieId,
-                            title = title,
-                            overview = overview,
-                            releaseDate = releaseDate,
-                            posterPath = posterPath,
-                            voteAverage = voteAverage.toDouble()
-                        )
+                        movieModel
                     )
                 }
             ) {
@@ -206,7 +174,7 @@ fun OverviewScreenUi(
                                 )
                                 .blur(spacing.spaceLarge, spacing.spaceLarge),
                             contentScale = ContentScale.FillWidth,
-                            model = posterPath,
+                            model = movieModel.posterPath,
                             onLoading = {
 
                             },
@@ -225,7 +193,7 @@ fun OverviewScreenUi(
                                         RoundedCornerShape(spacing.spaceExtraLarge)
                                     ),
                                 contentScale = ContentScale.Fit,
-                                model = posterPath,
+                                model = movieModel.posterPath,
                                 onLoading = {
 
                                 },
@@ -255,7 +223,7 @@ fun OverviewScreenUi(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = title,
+                            text = movieModel.title,
                             modifier = Modifier.padding(
                                 top = spacing.spaceSmall,
                                 start = spacing.spaceMedium,
@@ -283,13 +251,13 @@ fun OverviewScreenUi(
                                 )
                                 Spacer(modifier = Modifier.width(spacing.spaceSmall))
                                 Text(
-                                    text = voteAverage,
+                                    text = movieModel.voteAverage.toString(),
                                     color = Color.Gray,
                                 )
                             }
                             Spacer(modifier = Modifier.width(spacing.spaceMedium))
                             Text(
-                                text = releaseDate,
+                                text = movieModel.releaseDate,
                                 color = Color.Gray,
                                 modifier = Modifier.padding(top = spacing.spaceSmall),
                                 maxLines = 1,
@@ -297,7 +265,7 @@ fun OverviewScreenUi(
                             )
                         }
                         Text(
-                            text = overview,
+                            text = movieModel.overview,
                             modifier = Modifier.padding(
                                 top = spacing.spaceSmall,
                                 bottom = spacing.spaceExtraLarge + spacing.spaceMedium,
@@ -314,7 +282,7 @@ fun OverviewScreenUi(
                     .clip(CircleShape)
                     .background(Color.White)
                     .clickable {
-                        navController?.popBackStack()
+                        onBackPress()
                     }
                     .padding(spacing.spaceSmall)
                 ) {
@@ -332,13 +300,8 @@ fun OverviewScreenUi(
 @Composable
 fun OverviewScreenPreview() {
     OverviewScreenUi(
-        movieId = 1,
-        title = "The Demon Barber of Fleet Street",
-        overview = "Former cinema superhero Riggan Thomson (Michael Keaton) is mounting an ambitious Broadway production that he hopes will breathe new life into his stagnant career. It's risky, but he hopes that his creative gamble will prove that he's a real artist and not just a washed-up movie star. As opening night approaches, a castmate is injured, forcing Riggan to hire an actor (Edward Norton) who is guaranteed to shake things up. Meanwhile, Riggan must deal with his girlfriend, daughter and ex-wife.",
-        releaseDate = "2023",
-        posterPath = "https://assets-global.website-files.com/6009ec8cda7f305645c9d91b/6408f676b5811234c887ca62_top%20gun%20maverick-min.png",
-        voteAverage = "8.5",
-        navController = null,
+        MovieModel(),
+        onBackPress = {},
         uiState = OverviewUIModel(),
         onAddFavouriteClick = {},
         onRatingSelected = {}

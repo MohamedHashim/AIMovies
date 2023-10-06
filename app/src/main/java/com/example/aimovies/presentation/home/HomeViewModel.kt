@@ -6,12 +6,21 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aimovies.BuildConfig
+import com.example.aimovies.domain.use_case.GetRecommendations
+import com.example.aimovies.big_query.dto.TopRecommendation
+import com.example.aimovies.big_query.mapper.jsonToRecommendedMovie
 import com.example.aimovies.data.remote.api_handler.Result
 import com.example.aimovies.domain.mapper.toMovieModel
+import com.example.aimovies.domain.model.MovieModel
 import com.example.aimovies.domain.use_case.GetDiscoverMovie
 import com.example.aimovies.domain.use_case.GetFavouriteMovies
+import com.example.aimovies.domain.use_case.GetMovieDetailsById
 import com.example.aimovies.presentation.home.mapper.toMovieModel
+import com.example.aimovies.presentation.home.model.DiscoverMoviesUiModel
+import com.example.aimovies.presentation.home.model.MovieDetailsUiModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 
 /**
@@ -19,16 +28,28 @@ import kotlinx.coroutines.launch
  */
 class HomeViewModel(
     private val getDiscoverMovieUseCase: GetDiscoverMovie,
-    private val getFavouriteMoviesUseCase: GetFavouriteMovies
+    private val getMovieByIdUseCase: GetMovieDetailsById,
+    private val getFavouriteMoviesUseCase: GetFavouriteMovies,
+    private val getRecommendations: GetRecommendations
 ) : ViewModel() {
-    var uiState by mutableStateOf(HomeUiModel())
+    var discoverMoviesUiState by mutableStateOf(DiscoverMoviesUiModel())
         private set
+
+    var movieDetailsUiState by mutableStateOf(MovieDetailsUiModel())
+        private set
+
+    var selectedTab = mutableStateOf("Favorites")
+
+    private val recommendedMoviesList = mutableListOf<MovieModel>()
 
     fun getDiscoverMovie(page: Int) {
         viewModelScope.launch {
             when (val response = getDiscoverMovieUseCase(page)) {
                 is Result.Error -> {
-                    uiState = uiState.copy(isLoading = false, errorMessage = response.message)
+                    discoverMoviesUiState = discoverMoviesUiState.copy(
+                        isLoading = false,
+                        errorMessage = response.message
+                    )
                 }
 
                 is Result.Success -> {
@@ -41,8 +62,10 @@ class HomeViewModel(
                         )
                     }
                     data = data.copy(results = results)
+
                     val movieList = data.results.map { it.toMovieModel() }
-                    uiState = uiState.copy(
+
+                    discoverMoviesUiState = discoverMoviesUiState.copy(
                         discoverMovieList = movieList,
                         isLoading = false,
                         errorMessage = ""
@@ -52,14 +75,74 @@ class HomeViewModel(
         }
     }
 
+    fun getRecommendedMoviesById(recommendationsList: List<TopRecommendation>) {
+
+        recommendedMoviesList.clear()
+
+        movieDetailsUiState = movieDetailsUiState.copy(
+            recommendedMovieList = recommendedMoviesList,
+            isLoading = true
+        )
+
+        viewModelScope.launch {
+            /* *
+             * toList() function is used to wait for all emitted results
+             * to come in order to process them for the UI.
+             */
+            val response = getMovieByIdUseCase(recommendationsList).toList()
+
+            response.forEach { result ->
+                when (result) {
+                    is Result.Error -> {
+                        movieDetailsUiState = movieDetailsUiState.copy(
+                            isLoading = false,
+                            errorMessage = result.message
+                        )
+                    }
+
+                    is Result.Success -> {
+                        var movie = result.data
+
+                        movie = movie.copy(
+                            posterPath = BuildConfig.POSTER_BASE_URL + movie.posterPath,
+                            releaseDate = movie.releaseDate?.substringBefore("-") ?: ""
+                        )
+
+                        recommendedMoviesList.add(movie.toMovieModel())
+
+                        movieDetailsUiState = movieDetailsUiState.copy(
+                            recommendedMovieList = recommendedMoviesList,
+                            isLoading = false,
+                            errorMessage = ""
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun getFavouriteMovies() {
         viewModelScope.launch {
             getFavouriteMoviesUseCase().collectLatest {
-                uiState = uiState.copy(
+                discoverMoviesUiState = discoverMoviesUiState.copy(
                     favouriteMovieList = it.map { favouriteEntity ->
                         favouriteEntity.toMovieModel()
                     }
                 )
+            }
+        }
+    }
+
+    fun getDataFromBigQuery() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val recommendedMoviesBigQuery =
+                getRecommendations("5306")
+
+            recommendedMoviesBigQuery?.let { recommendationResponse ->
+                val recommendedList = jsonToRecommendedMovie(recommendationResponse)
+
+                val response = recommendedList[0]
+                getRecommendedMoviesById(response.topRecommendations)
             }
         }
     }
