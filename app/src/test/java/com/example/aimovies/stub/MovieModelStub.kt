@@ -9,7 +9,7 @@ val movieModelStub = MovieModel(
     movieId = 1,
     title = "title",
     overview = "overview",
-    posterPath = "",
+    posterPath = "https://image.tmdb.org/t/p/original",
     voteAverage = 9.0,
     releaseDate = "10/10/2023"
 )

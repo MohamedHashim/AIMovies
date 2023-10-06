@@ -1,4 +1,4 @@
-package com.example.aimovies.data.remote.dto
+package com.example.aimovies.data.remote.dto.discover
 
 import kotlinx.serialization.Serializable
 

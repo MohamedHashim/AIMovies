@@ -7,11 +7,18 @@ import com.example.aimovies.data.local.favourite.FavouriteMovieDataSource
 import com.example.aimovies.data.local.favourite.FavouriteMovieDataSourceImpl
 import com.example.aimovies.data.local.rating.MovieRatingDataSource
 import com.example.aimovies.data.local.rating.MovieRatingDataSourceImpl
-import com.example.aimovies.data.remote.MovieService
+import com.example.aimovies.data.remote.github_service.GithubService
+import com.example.aimovies.data.remote.github_service.GithubServiceImpl
+import com.example.aimovies.data.remote.movie_service.MovieService
+import com.example.aimovies.data.remote.movie_service.MovieServiceImpl
 import com.example.aimovies.data.repository.discover.DiscoverMovieRepository
 import com.example.aimovies.data.repository.discover.DiscoverMovieRepositoryImpl
 import com.example.aimovies.data.repository.favourite.FavouriteMovieRepository
 import com.example.aimovies.data.repository.favourite.FavouriteMovieRepositoryImpl
+import com.example.aimovies.data.repository.github_api.GithubApiRepository
+import com.example.aimovies.data.repository.github_api.GithubApiRepositoryImpl
+import com.example.aimovies.data.repository.movie_details.MovieDetailsRepository
+import com.example.aimovies.data.repository.movie_details.MovieDetailsRepositoryImpl
 import com.example.aimovies.data.repository.rating.MovieRatingRepository
 import com.example.aimovies.data.repository.rating.MovieRatingRepositoryImpl
 import com.squareup.sqldelight.android.AndroidSqliteDriver
@@ -38,8 +45,11 @@ val dataModule = module {
     single {
         provideHttpClient()
     }
-    single {
-        MovieService(get())
+    single<MovieService> {
+        MovieServiceImpl(get())
+    }
+    single<GithubService> {
+        GithubServiceImpl(get())
     }
     single<SqlDriver> {
         AndroidSqliteDriver(
@@ -62,6 +72,12 @@ val dataModule = module {
     }
     single<DiscoverMovieRepository> {
         DiscoverMovieRepositoryImpl(get())
+    }
+    single<MovieDetailsRepository> {
+        MovieDetailsRepositoryImpl(get())
+    }
+    single<GithubApiRepository> {
+        GithubApiRepositoryImpl(get())
     }
 }
 

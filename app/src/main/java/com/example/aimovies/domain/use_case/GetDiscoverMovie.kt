@@ -1,7 +1,7 @@
 package com.example.aimovies.domain.use_case
 
 import com.example.aimovies.data.remote.api_handler.Result
-import com.example.aimovies.data.remote.dto.DiscoverMovieResponse
+import com.example.aimovies.data.remote.dto.discover.DiscoverMovieResponse
 import com.example.aimovies.data.repository.discover.DiscoverMovieRepository
 
 /**
